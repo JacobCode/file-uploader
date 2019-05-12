@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
-export default class SignIn extends Component {
+import { loginUser, signOut } from '../redux/actions/actions';
+
+class SignIn extends Component {
 	constructor() {
 		super();
 		this.state = {
@@ -10,10 +14,16 @@ export default class SignIn extends Component {
 			remail: '',
 			rusername: '',
 			rpassword: '',
+			showLogin: true,
+			id: '5cd5b39430ab870450c48054',
+			user: {},
+			error: ''
 		}
 		this.handleInput = this.handleInput.bind(this);
 		this.loginSubmit = this.loginSubmit.bind(this);
 		this.registerSubmit = this.registerSubmit.bind(this);
+		this.changeForm = this.changeForm.bind(this);
+		this.logout = this.logout.bind(this);
 	}
 	handleInput(e) {
 		this.setState({ [e.target.id]: e.target.value });
@@ -24,7 +34,22 @@ export default class SignIn extends Component {
 			username: this.state.lusername,
 			password: this.state.lpassword
 		}
-		axios.post('/login', login).then((res) => console.log(res))
+		axios.post('/login', login).then((res) => {
+			if(res.data.username !== undefined) {
+				this.props.loginUser(res.data);
+				this.setState({ lusername: '', lpassword: '', user: res.data });
+				setTimeout(() => {
+					window.location.pathname = '/uploads';
+				}, 500);
+			} else {
+				this.setState({ error: res.data })
+				setTimeout(() => {
+					this.setState({ error: '' })
+				}, 5000)
+			}
+			localStorage.setItem('user', JSON.stringify(this.props.user));
+		}).then(() => {
+		})
 	}
 	registerSubmit(e) {
 		e.preventDefault();
@@ -33,55 +58,104 @@ export default class SignIn extends Component {
 			username: this.state.rusername,
 			password: this.state.rpassword
 		}
-		axios.post('/register', newUser).then((res) => console.log(res))
+		axios.post('/register', newUser).then((res) => {
+			console.log(res);
+			if (res.status === 201) {
+				this.setState({ error: res.data });
+			} else {
+				this.setState({ remail: '', rusername: '', rpassword: '' });
+				setTimeout(() => {
+					window.location.pathname = '/signin';
+				}, 2000);
+			}
+		});
+	}
+	changeForm() {
+		this.setState({ showLogin: !this.state.showLogin, lusername: '', lpassword: '', remail: '', rusername: '', rpassword: '' })
+	}
+	logout() {
+		this.props.signOut();
+		localStorage.clear();
 	}
 	render() {
+		const { user } = this.props;
 		return (
 			<div id="signin">
 
-				{/* Login */}
+				{/* Login Form if not logged in */}
+				{this.state.showLogin === true && user.username === null ? 
 				<form onSubmit={this.loginSubmit} className="form mb-5">
+					{/* Login Form */}
 					<h1 className="mb-4 text-primary">Login</h1>
 					<div className="form-group">
 						<label htmlFor="lusername" className="mb-2 text-primary">Username</label><br/>
-						<input onChange={this.handleInput} type="text" name="lusername" id="lusername" className="form-control" />
+						<input onChange={this.handleInput} value={this.state.lusername} type="text" name="lusername" id="lusername" className="form-control" />
 					</div>
 					<div className="form-group">
 						<label htmlFor="lpassword" className="mb-2 text-primary">Password</label><br/>
-						<input onChange={this.handleInput} type="text" name="lpassword" id="lpassword" className="form-control" />
+						<input onChange={this.handleInput} value={this.state.lpassword} type="password" name="lpassword" id="lpassword" className="form-control" />
 					</div>
 					<div className="form-group">
 						<button type="submit" name="lsubmit" className="btn btn-primary btn-md">Sign In</button>
 					</div>
 					<div className="text-right">
-						<a href="/signin" className="text-primary">Register</a>
+						<span onClick={this.changeForm} href="/signin" className="text-primary">Register</span>
 					</div>
 				</form>
+				: null }
 
-				{/* Register */}
+				{/* Register Form if not logged in */}
+				{this.state.showLogin === false && user.username === null ?
 				<form onSubmit={this.registerSubmit} className="form">
+					{/* Register Form */}
 					<h1 className="mb-4 text-danger">Register</h1>
 					<div className="form-group">
 						<label htmlFor="remail" className="mb-2 text-danger">Email</label><br/>
-						<input onChange={this.handleInput} type="email" name="remail" id="remail" className="form-control" />
+						<input onChange={this.handleInput} value={this.state.remail} type="email" name="remail" id="remail" className="form-control" />
 					</div>
 					<div className="form-group">
 						<label htmlFor="rusername" className="mb-2 text-danger">Username</label><br/>
-						<input onChange={this.handleInput} type="text" name="rusername" id="rusername" className="form-control" />
+						<input onChange={this.handleInput} value={this.state.rusername} type="text" name="rusername" id="rusername" className="form-control" />
 					</div>
 					<div className="form-group">
 						<label htmlFor="rassword" className="mb-2 text-danger">Password</label><br/>
-						<input onChange={this.handleInput} type="password" name="rpassword" id="rpassword" className="form-control" />
+						<input onChange={this.handleInput} value={this.state.rpassword} type="password" name="rpassword" id="rpassword" className="form-control" />
 					</div>
 					<div className="form-group">
 						<button type="submit" name="rsubmit" className="btn btn-danger btn-md">Sign Up</button>
 					</div>
 					<div className="text-right">
-						<a href="/signin" className="text-danger">Login</a>
+						<span onClick={this.changeForm} href="/signin" className="text-danger">Login</span>
 					</div>
-				</form>
+				</form> : null }
+
+
+				{/* Login Success Alert */}
+				{this.state.user.username !== undefined ?
+				<div className="alert alert-success" role="alert">
+					{`Welcome, ${this.state.user.username}`}
+				</div> : null}
+				
+				{/* Login Fail Alert */}
+				{this.state.error.length > 0 ? 
+				<div className="alert alert-danger" role="alert">
+					{this.state.error}
+				</div> : null}
+
+				{user.email !== null && user.username !== null && user.password !== null ? <p>Already signed in, do you want to <span className="text-danger" onClick={this.logout}>sign out</span>?</p> : null}
 
 			</div>
 		)
 	}
 }
+
+SignIn.propTypes = {
+	user: PropTypes.object.isRequired,
+	loginUser: PropTypes.func.isRequired
+};
+
+const mapStateToProps = state => ({
+    user: state.siteData.user,
+});
+
+export default connect(mapStateToProps, { loginUser, signOut })(SignIn);

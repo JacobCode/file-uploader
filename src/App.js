@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import { Provider } from 'react-redux';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import store from './redux/store';
 
 // Reset default css on browsers
 import './reset.css';
@@ -7,23 +9,28 @@ import './reset.css';
 // Components
 import UploadForm from './components/UploadForm';
 import SignIn from './components/SignIn';
+import Navbar from './components/Navbar';
 
 class App extends Component {
-  render() {
-	  return (
-		<BrowserRouter>
-			<div className="App container">
-				<h1 className="mb-4 mt-4" style={{fontSize: '1.5rem'}}>File Uploader</h1>
-				<Switch>
-					<Route path={process.env.PUBLIC_URL + '/uploads'} component={UploadForm} exact />
-					<Route path={process.env.PUBLIC_URL + '/signin'} component={SignIn} exact />
-					<Redirect from="/signup" to="/signin" />
-					<Redirect from="/login" to="/signin" />
-				</Switch>
-			</div>
-		</BrowserRouter>
-	);
-  }
+	render() {
+		return (
+			<Provider store={store}>
+				<BrowserRouter>
+					<div className="App container">
+						<Navbar />
+						<Switch>
+							<Route path={process.env.PUBLIC_URL + '/uploads'} component={UploadForm} exact />
+							<Route path={process.env.PUBLIC_URL + '/signin'} component={SignIn} exact />
+							<Redirect from="/signup" to="/signin" />
+							<Redirect from="/login" to="/signin" />
+							<Redirect from="/" to="/signin" />
+							<Redirect from="/upload" to="/uploads" />
+						</Switch>
+					</div>
+				</BrowserRouter>
+			</Provider>
+		);
+  	}
 }
 
 export default App;
