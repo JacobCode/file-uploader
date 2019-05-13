@@ -82,19 +82,25 @@ class SignIn extends Component {
 		return (
 			<div id="signin">
 
-				{/* Login Form if not logged in */}
+				{/* Show Login form if not logged in */}
 				{this.state.showLogin === true && user.username === null ? 
 				<form onSubmit={this.loginSubmit} className="form mb-5">
 					{/* Login Form */}
 					<h1 className="mb-4 text-primary">Login</h1>
-					<div className="form-group">
-						<label htmlFor="lusername" className="mb-2 text-primary">Username</label><br/>
-						<input onChange={this.handleInput} value={this.state.lusername} type="text" name="lusername" id="lusername" className="form-control" />
+					<div className="input-group mb-4">
+						<div className="input-group-prepend">
+							<span className="input-group-text"><i className="fas fa-user"></i></span>
+						</div>
+						<input onChange={this.handleInput} value={this.state.lusername} type="text" name="lusername" id="lusername" className="form-control" placeholder="Username" aria-label="Username" />
 					</div>
-					<div className="form-group">
-						<label htmlFor="lpassword" className="mb-2 text-primary">Password</label><br/>
-						<input onChange={this.handleInput} value={this.state.lpassword} type="password" name="lpassword" id="lpassword" className="form-control" />
+
+					<div className="input-group mb-4">
+						<div className="input-group-prepend">
+							<span className="input-group-text"><i className="fas fa-key"></i></span>
+						</div>
+						<input onChange={this.handleInput} value={this.state.lpassword} type="password" name="lpassword" id="lpassword" className="form-control" placeholder="Password" aria-label="Password" />
 					</div>
+
 					<div className="form-group">
 						<button type="submit" name="lsubmit" className="btn btn-primary btn-md">Sign In</button>
 					</div>
@@ -104,23 +110,33 @@ class SignIn extends Component {
 				</form>
 				: null }
 
-				{/* Register Form if not logged in */}
+				{/* ShowRegister form if not logged in */}
 				{this.state.showLogin === false && user.username === null ?
 				<form onSubmit={this.registerSubmit} className="form">
 					{/* Register Form */}
 					<h1 className="mb-4 text-danger">Register</h1>
-					<div className="form-group">
-						<label htmlFor="remail" className="mb-2 text-danger">Email</label><br/>
-						<input onChange={this.handleInput} value={this.state.remail} type="email" name="remail" id="remail" className="form-control" />
+
+					<div className="input-group mb-4">
+						<div className="input-group-prepend">
+							<span className="input-group-text"><i className="fas fa-envelope"></i></span>
+						</div>
+						<input onChange={this.handleInput} value={this.state.remail} type="email" name="remail" id="remail" className="form-control" placeholder="Email" aria-label="Email" />
 					</div>
-					<div className="form-group">
-						<label htmlFor="rusername" className="mb-2 text-danger">Username</label><br/>
-						<input onChange={this.handleInput} value={this.state.rusername} type="text" name="rusername" id="rusername" className="form-control" />
+
+					<div className="input-group mb-4">
+						<div className="input-group-prepend">
+							<span className="input-group-text"><i className="fas fa-user"></i></span>
+						</div>
+						<input onChange={this.handleInput} value={this.state.rusername} type="text" name="rusername" id="rusername" className="form-control" placeholder="Username" aria-label="Username" />
 					</div>
-					<div className="form-group">
-						<label htmlFor="rassword" className="mb-2 text-danger">Password</label><br/>
-						<input onChange={this.handleInput} value={this.state.rpassword} type="password" name="rpassword" id="rpassword" className="form-control" />
+
+					<div className="input-group mb-4">
+						<div className="input-group-prepend">
+							<span className="input-group-text"><i className="fas fa-key"></i></span>
+						</div>
+						<input onChange={this.handleInput} value={this.state.rpassword} type="password" name="rpassword" id="rpassword" className="form-control" placeholder="Password" aria-label="Password" />
 					</div>
+
 					<div className="form-group">
 						<button type="submit" name="rsubmit" className="btn btn-danger btn-md">Sign Up</button>
 					</div>

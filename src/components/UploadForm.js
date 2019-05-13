@@ -19,7 +19,7 @@ class UploadForm extends Component {
 		this.setState({ chosenFile: file, fileName: file.name })
 	}
 	handleSubmit(e) {
-		console.log(e)
+		console.log(e);
 	}
 	componentWillMount() {
 		if (localStorage.user !== undefined) {
@@ -31,7 +31,8 @@ class UploadForm extends Component {
 			const user = JSON.parse(localStorage.user);
 			return (
 				<div id="upload-form">
-					{user.id !== null && user.email !== null && user.username !== null ? <form onSubmit={this.handleSubmit} action="/upload" method="POST" encType="multipart/form-data">
+					{user.id !== null && user.email !== null && user.username !== null ?
+					<form onSubmit={this.handleSubmit} action="/upload" method="POST" encType="multipart/form-data">
 						<div className="custom-file">
 							{/* <input accept="image/*" name="file" onChange={this.handleFile} type="file" className="custom-file-input" required /> */}
 							<input name="file" onChange={this.handleFile} type="file" className="custom-file-input" required />

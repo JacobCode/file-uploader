@@ -18,11 +18,11 @@ class Navbar extends Component {
 			<div className="header d-flex justify-content-between align-items-center mb-4">
 				<h1 className="mb-4 mt-4" style={{ fontSize: '1.5rem' }}>File Uploader</h1>
 				<div className="links d-flex justify-content-between align-items-center">
-					<a className="mr-3" href="/uploads">Uploads</a>
+					<a className="mr-3" href="/uploads">My Uploads</a>
 					{this.props.user.username === null ? 
 					<a href="/signin">Sign In</a>
 					:
-					<p className="mb-0" onClick={this.logout}>Logout, <span className="text-danger">{this.props.user.username}</span></p>}
+					<p className="mb-0" onClick={this.logout}>Logout, <span className="text-secondary">{this.props.user.username}</span></p>}
 				</div>
 			</div>
 		)
