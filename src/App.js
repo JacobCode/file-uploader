@@ -7,9 +7,11 @@ import store from './redux/store';
 import './reset.css';
 
 // Components
-import UploadForm from './components/UploadForm';
 import SignIn from './components/SignIn';
 import Navbar from './components/Navbar';
+
+// Containers
+import Uploads from './containers/Uploads';
 
 class App extends Component {
 	render() {
@@ -19,7 +21,7 @@ class App extends Component {
 					<div className="App container">
 						<Navbar />
 						<Switch>
-							<Route path={process.env.PUBLIC_URL + '/uploads'} component={UploadForm} exact />
+							<Route path={process.env.PUBLIC_URL + '/uploads'} component={Uploads} exact />
 							<Route path={process.env.PUBLIC_URL + '/signin'} component={SignIn} exact />
 							<Redirect from="/signup" to="/signin" />
 							<Redirect from="/login" to="/signin" />

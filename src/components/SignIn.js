@@ -15,7 +15,7 @@ class SignIn extends Component {
 			rusername: '',
 			rpassword: '',
 			showLogin: true,
-			id: '5cd5b39430ab870450c48054',
+			id: '',
 			user: {},
 			error: ''
 		}
@@ -45,7 +45,7 @@ class SignIn extends Component {
 				this.setState({ error: res.data })
 				setTimeout(() => {
 					this.setState({ error: '' })
-				}, 5000)
+				}, 3500)
 			}
 			localStorage.setItem('user', JSON.stringify(this.props.user));
 		}).then(() => {
@@ -59,16 +59,19 @@ class SignIn extends Component {
 			password: this.state.rpassword
 		}
 		axios.post('/register', newUser).then((res) => {
-			console.log(res);
-			if (res.status === 201) {
-				this.setState({ error: res.data });
-			} else {
+			if (res.status === 200) {
 				this.setState({ remail: '', rusername: '', rpassword: '' });
 				setTimeout(() => {
 					window.location.pathname = '/signin';
 				}, 2000);
 			}
-		});
+			if (res.status === 201) {
+				this.setState({ error: res.data });
+				setTimeout(() => {
+					
+				}, 2000);
+			}
+		}).catch((err) => this.setState({ remail: '', rusername: '', rpassword: '' }));
 	}
 	changeForm() {
 		this.setState({ showLogin: !this.state.showLogin, lusername: '', lpassword: '', remail: '', rusername: '', rpassword: '' })
@@ -86,7 +89,7 @@ class SignIn extends Component {
 				{this.state.showLogin === true && user.username === null ? 
 				<form onSubmit={this.loginSubmit} className="form mb-5">
 					{/* Login Form */}
-					<h1 className="mb-4 text-primary">Login</h1>
+					<h1 className="mb-4 text-warning">Login</h1>
 					<div className="input-group mb-4">
 						<div className="input-group-prepend">
 							<span className="input-group-text"><i className="fas fa-user"></i></span>
@@ -102,7 +105,7 @@ class SignIn extends Component {
 					</div>
 
 					<div className="form-group">
-						<button type="submit" name="lsubmit" className="btn btn-primary btn-md">Sign In</button>
+						<button type="submit" name="lsubmit" className="btn btn-warning btn-md text-white">Sign In</button>
 					</div>
 					<div className="text-right">
 						<span onClick={this.changeForm} href="/signin" className="text-primary">Register</span>
@@ -114,7 +117,7 @@ class SignIn extends Component {
 				{this.state.showLogin === false && user.username === null ?
 				<form onSubmit={this.registerSubmit} className="form">
 					{/* Register Form */}
-					<h1 className="mb-4 text-danger">Register</h1>
+					<h1 className="mb-4 text-warning">Register</h1>
 
 					<div className="input-group mb-4">
 						<div className="input-group-prepend">
@@ -138,10 +141,10 @@ class SignIn extends Component {
 					</div>
 
 					<div className="form-group">
-						<button type="submit" name="rsubmit" className="btn btn-danger btn-md">Sign Up</button>
+						<button type="submit" name="rsubmit" className="btn btn-warning btn-md text-white">Sign Up</button>
 					</div>
 					<div className="text-right">
-						<span onClick={this.changeForm} href="/signin" className="text-danger">Login</span>
+						<span onClick={this.changeForm} href="/signin" className="text-primary">Login</span>
 					</div>
 				</form> : null }
 
@@ -154,7 +157,7 @@ class SignIn extends Component {
 				
 				{/* Login Fail Alert */}
 				{this.state.error.length > 0 ? 
-				<div className="alert alert-danger" role="alert">
+				<div className="alert alert-warning" role="alert">
 					{this.state.error}
 				</div> : null}
 

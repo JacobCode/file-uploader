@@ -36,7 +36,7 @@ let gfs;
 conn.once('open', () => {
 	gfs = Grid(conn.db, mongoose.mongo);
 	gfs.collection('uploads');
-})
+});
 
 // Create storage
 const storage = new GridFsStorage({
@@ -45,13 +45,14 @@ const storage = new GridFsStorage({
 	file: (req, file) => {
 		return new Promise((resolve, reject) => {
 			crypto.randomBytes(16, (err, buf) => {
+				console.log(file.originalname);
 				if (err) {
 					return reject(err);
 				}
 				const filename = buf.toString('hex') + path.extname(file.originalname);
 				const fileInfo = {
 					fileName: filename,
-					metadata: { uploadedBy: { uploadedBy } = storage.configuration.uploadedBy },
+					metadata: { uploadedBy: { uploadedBy } = storage.configuration.uploadedBy, name: file.originalname },
 					bucketName: 'uploads'
 				};
 				resolve(fileInfo);
@@ -64,12 +65,10 @@ const upload = multer({ storage });
 // Upload files to db
 app.post('/upload', upload.single('file'), (req, res) => {
 	if (req.file !== undefined) {
-		// Send 'ok' and redirect
-		res.status(200).redirect('/uploads');
 		gfs.files.find().toArray((err, files) => {
 			// If no files
 			if (files.length === 0) {
-				return res.status(404).json({
+				return res.status(201).json({
 					err: 'No files exist'
 				});
 			}
@@ -84,23 +83,32 @@ app.post('/upload', upload.single('file'), (req, res) => {
 			}
 			// Find which user is uploading a file
 			User.findById(req.body.id, (err, dt) => {
-				for (var i = 0; i < files.length; i++) {
-					if (files[i].metadata.uploadedBy.toString() === dt._id.toString()) {
-						// Set array
-						var arr = [];
-						// Push users current files to array
-						dt.files.forEach((f) => {
-							arr.push(f);
-						})
-						// Add new file to users current files
-						const output = [...arr, files.filter((f) => f.metadata.uploadedBy === req.body.id)[0]];
-						// Update and save users files
-						User.findByIdAndUpdate(req.body.id, { files: output }, (error) => {
-							if (error) console.log(error);
-						});
-					};
+				if (err) {
+					console.log(err);
 				}
-			})
+				for (var i = 0; i < files.length; i++) {
+					if (dt !== null) {
+						if (files[i].metadata.uploadedBy.toString() === dt._id.toString()) {
+							// Set array
+							var arr = [];
+							// Push users current files to array
+							dt.files.forEach((f) => {
+								arr.push(f);
+							})
+							// Add new file to users current files
+							const output = [...arr, files.filter((f) => f.metadata.uploadedBy === req.body.id)[0]];
+							// Update and save users files
+							User.findByIdAndUpdate(req.body.id, { files: output }, (error) => {
+								if (error) console.log(error);
+							});
+							// Send 'ok' and redirect
+							res.status(200).redirect('/uploads');
+						}
+					} else {
+						res.status(201).send('He');
+					}
+				}
+			});
 		});
 	}
 });
@@ -110,7 +118,7 @@ app.get('/image/:filename', (req, res) => {
 	gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
 		// If no files
 		if (!file || file.length === 0) {
-			res.status(200).send({ error: 'No files found' })
+			res.status(200).send({ error: 'No files found' });
 		}
 		if (file !== null) {
 			const readstream = gfs.createReadStream(file.filename);
@@ -124,22 +132,16 @@ app.get('/image/:filename', (req, res) => {
 			});
 		}
 	});
-})
-
-// Get all files
-app.get('/api/files', (req, res) => {
-	gfs.files.find().toArray((err, files) => {
-		// Check if files
-		if (files.length === 0) {
-			return res.status(404).json({
-				err: 'No files exist'
-			});
-		}
-		res.json(files);
-	});
 });
 
-// *** Sign In Routes ***
+// Get user's files
+app.get('/user/files/:userId', (req, res) => {
+	User.findById(req.params.userId)
+		.then((data) => {
+			res.status(200).send(data.files);
+		}).catch((err) => console.log(err));
+});
+
 // Register
 app.post('/register', (req, res) => {
 	if (req.body.email && req.body.username && req.body.password) {
@@ -167,7 +169,8 @@ app.post('/register', (req, res) => {
 				});
 		});
 	}
-})
+});
+
 // Login
 app.post('/login', (req, res) => {
 	User.find({ username: req.body.username })
@@ -186,7 +189,7 @@ app.post('/login', (req, res) => {
 		})
 		.catch((err) => {
 			res.status(200).send('Wrong Login Info');
-		})
-})
+		});
+});
 
 app.listen(process.env.PORT || 3001, () => console.log('\x1b[32m', `Server running on port ${process.env.PORT|| 3001}`));

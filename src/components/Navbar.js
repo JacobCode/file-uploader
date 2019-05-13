@@ -12,6 +12,7 @@ class Navbar extends Component {
 	logout() {
 		this.props.signOut();
 		localStorage.clear();
+		window.location.pathname = '/signin';
 	}
 	render() {
 		return (
