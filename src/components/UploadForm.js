@@ -14,8 +14,11 @@ class UploadForm extends Component {
 		this.handleFile = this.handleFile.bind(this);
 	}
 	handleFile(e) {
+		if (this.props.user.username === null) {
+			e.preventDefault();
+		}
 		const file = e.target.files[0];
-		this.setState({ chosenFile: file, fileName: file.name })
+		this.setState({ chosenFile: file, fileName: file.name });
 	}
 	componentWillMount() {
 		if (localStorage.user !== undefined) {
@@ -30,8 +33,7 @@ class UploadForm extends Component {
 					{user.id !== null && user.email !== null && user.username !== null ?
 					<form action="/upload" method="POST" encType="multipart/form-data">
 						<div className="mb-5 custom-file">
-							{/* <input accept="image/*" name="file" onChange={this.handleFile} type="file" className="custom-file-input" required /> */}
-							<input name="file" onChange={this.handleFile} type="file" className="custom-file-input" required />
+							<input accept="image/*" name="file" onChange={this.handleFile} type="file" className="custom-file-input" required />
 							<label className="custom-file-label">{this.state.fileName}</label>
 							{/* Uploaded by user */}
 							<input name="id" type="hidden" value={user._id} />

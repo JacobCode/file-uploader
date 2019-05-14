@@ -48,8 +48,7 @@ class SignIn extends Component {
 				}, 3500)
 			}
 			localStorage.setItem('user', JSON.stringify(this.props.user));
-		}).then(() => {
-		})
+		}).catch((err) => this.setState({ error: 'Too many attempts, please try again later' }))
 	}
 	registerSubmit(e) {
 		e.preventDefault();
@@ -63,15 +62,16 @@ class SignIn extends Component {
 				this.setState({ remail: '', rusername: '', rpassword: '' });
 				setTimeout(() => {
 					window.location.pathname = '/signin';
-				}, 2000);
+				}, 1000);
 			}
 			if (res.status === 201) {
 				this.setState({ error: res.data });
-				setTimeout(() => {
-					
-				}, 2000);
+				setTimeout(() => { this.setState({ error: '' })}, 2000);
 			}
-		}).catch((err) => this.setState({ remail: '', rusername: '', rpassword: '' }));
+		}).catch((err) => {
+			this.setState({ error: 'Too many attempts, please try again later' });
+			setTimeout(() => { this.setState({ error: '' })}, 2000);
+		});
 	}
 	changeForm() {
 		this.setState({ showLogin: !this.state.showLogin, lusername: '', lpassword: '', remail: '', rusername: '', rpassword: '' })
@@ -115,7 +115,7 @@ class SignIn extends Component {
 
 				{/* ShowRegister form if not logged in */}
 				{this.state.showLogin === false && user.username === null ?
-				<form onSubmit={this.registerSubmit} className="form">
+				<form onSubmit={this.registerSubmit} className="form mb-5">
 					{/* Register Form */}
 					<h1 className="mb-4 text-warning">Register</h1>
 

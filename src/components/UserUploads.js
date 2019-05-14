@@ -7,9 +7,12 @@ class UserUploads extends Component {
 	constructor() {
 		super();
 		this.state = {
-			userFiles: []
+			userFiles: [],
+			activeImage: '',
+			chosenFile: ''
 		}
 		this.getUserFiles = this.getUserFiles.bind(this);
+		this.showFile = this.showFile.bind(this);
 	}
 	getUserFiles() {
 		axios.get(`/user/files/${this.props.user._id}`)
@@ -27,6 +30,14 @@ class UserUploads extends Component {
 
 		return (bytes / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + sizes[i];
 	}
+	showFile(e, file) {
+		if (file._id) {
+			axios.get(`/files/${file.filename}`)
+				.then((res) => {
+					this.setState({ chosenFile: file, activeImage: res.data.data })
+				});
+		}
+	}
 	render() {
 		return (
 			<div id="user-uploads">
@@ -34,18 +45,18 @@ class UserUploads extends Component {
 				<div className="uploads">
 					<h2 className="mb-5 text-warning">Your Files</h2>
 					<div className="w-100 d-flex justify-content-between mb-3 text-muted">
-						<p style={{width: '60%'}} className="text-left">Name:</p>
+						<p style={{width: '50%'}} className="text-left">Name:</p>
 						<p style={{width: '15%'}} className="text-right">Size:</p>
-						<p style={{width: '25%'}} className="text-right">Type:</p>
+						<p style={{width: '35%'}} className="text-right">Type:</p>
 					</div>
 					<div className="files d-flex flex-column">
 						{this.state.userFiles.map((file) => {
 							console.log(file);
 							return (
 								<div className="w-100 d-flex justify-content-between mb-4 border-bottom border-muted" key={file._id}>
-									<p style={{width: '50%'}} className="text-left">{file.metadata.name}</p>
-									<p style={{width: '25%'}} className="text-right">{this.convertBytes(file.length)}</p>
-									<p style={{width: '25%'}} className="text-right">{file.contentType}</p>
+									<p onClick={e => this.showFile(e, file)} style={{width: '50%'}} className="text-left">{file.metadata.name}</p>
+									<p style={{width: '15%'}} className="text-right">{this.convertBytes(file.length)}</p>
+									<p style={{width: '35%'}} className="text-right">{file.contentType}</p>
 								</div>
 							)
 						})}
@@ -53,6 +64,10 @@ class UserUploads extends Component {
 				</div>
 				: null }
 				{this.state.userFiles.length === 0 && this.props.user.username !== null ? 'No Files Found' : null}
+				{this.state.activeImage.length > 0 ? <img className="d-flex mw-100" src={`data:image/pdf;base64,${this.state.activeImage}`} alt='null' /> : null}
+				{/* SVG: svg+xml */}
+				{/* PNG: png */}
+				{/* JPEG: jpeg */}
 			</div>
 		)
 	}
