@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -18,6 +19,14 @@ app.use(bodyParser.json());
 app.use(methodOverride('_method'))
 app.use(cors());
 app.disable('x-powered-by');
+app.enable("trust proxy");
+
+var setupLimit = (maxAttempts) => {
+	return rateLimit({
+		windowMs: 360000,
+		max: maxAttempts
+	});
+}
 
 // DB Models
 const User = require('./models/user');
@@ -45,14 +54,13 @@ const storage = new GridFsStorage({
 	file: (req, file) => {
 		return new Promise((resolve, reject) => {
 			crypto.randomBytes(16, (err, buf) => {
-				console.log(file.originalname);
 				if (err) {
 					return reject(err);
 				}
 				const filename = buf.toString('hex') + path.extname(file.originalname);
 				const fileInfo = {
 					fileName: filename,
-					metadata: { uploadedBy: { uploadedBy } = storage.configuration.uploadedBy, name: file.originalname },
+					metadata: { uploadedBy: { uploadedBy } = storage.configuration.uploadedBy, name: file.originalname.trim() },
 					bucketName: 'uploads'
 				};
 				resolve(fileInfo);
@@ -63,7 +71,7 @@ const storage = new GridFsStorage({
 const upload = multer({ storage });
 
 // Upload files to db
-app.post('/upload', upload.single('file'), (req, res) => {
+app.post('/upload', setupLimit(3), upload.single('file'), (req, res) => {
 	if (req.file !== undefined) {
 		gfs.files.find().toArray((err, files) => {
 			// If no files
@@ -114,7 +122,7 @@ app.post('/upload', upload.single('file'), (req, res) => {
 });
 
 // Get File Path
-app.get('/image/:filename', (req, res) => {
+app.get('/files/:filename', (req, res) => {
 	gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
 		// If no files
 		if (!file || file.length === 0) {
@@ -125,10 +133,10 @@ app.get('/image/:filename', (req, res) => {
 			// readstream.pipe(res);
 			readstream.on('data', function (chunk) {
 				const str = BJSON.stringify({ buf: Buffer.from(chunk) });
-				res.status(200).send({ data: JSON.parse(str)['buf']['data'] })
+				res.status(200).send({ data: JSON.parse(str)['buf']['data'].substr(7) })
 			});
 			readstream.on('error', e => {
-				console.log(e);
+				console.log('error');
 			});
 		}
 	});
@@ -143,7 +151,8 @@ app.get('/user/files/:userId', (req, res) => {
 });
 
 // Register
-app.post('/register', (req, res) => {
+app.post('/register', setupLimit(3), (req, res) => {
+	console.log(Object.keys(res));
 	if (req.body.email && req.body.username && req.body.password) {
 		const hashPassword = async () => {
 			const salt = await bcrypt.genSalt(10);
@@ -168,11 +177,13 @@ app.post('/register', (req, res) => {
 					}
 				});
 		});
+	} else {
+		res.status(201).send('Username or Email already taken');
 	}
 });
 
 // Login
-app.post('/login', (req, res) => {
+app.post('/login', setupLimit(8), (req, res) => {
 	User.find({ username: req.body.username })
 		.then((results) => {
 			// Compare passwords
