@@ -17,7 +17,8 @@ class SignIn extends Component {
 			showLogin: true,
 			id: '',
 			user: {},
-			error: ''
+			error: '',
+			message: ''
 		}
 		this.handleInput = this.handleInput.bind(this);
 		this.loginSubmit = this.loginSubmit.bind(this);
@@ -69,8 +70,15 @@ class SignIn extends Component {
 				setTimeout(() => { this.setState({ error: '' })}, 2000);
 			}
 		}).catch((err) => {
-			this.setState({ error: 'Too many attempts, please try again later' });
-			setTimeout(() => { this.setState({ error: '' })}, 2000);
+			console.log(err.response);
+			if (err.response.status === 429) {
+				this.setState({ error: err.response.data });
+				setTimeout(() => { this.setState({ error: '' })}, 2000);
+			}
+			if (err.response.status === 404) {
+				this.setState({ message: `Registration Successful!`, remail: '', rusername: '', rpassword: '' });
+				setTimeout(() => { this.setState({ message: '' })}, 2000);
+			}
 		});
 	}
 	changeForm() {
@@ -159,6 +167,12 @@ class SignIn extends Component {
 				{this.state.error.length > 0 ? 
 				<div className="alert alert-warning" role="alert">
 					{this.state.error}
+				</div> : null}
+
+				{/* Register Success Alert */}
+				{this.state.message.length > 0 ?
+				<div className="alert alert-success" role="alert">
+					{this.state.message}
 				</div> : null}
 
 				{user.email !== null && user.username !== null && user.password !== null ? <p>Already signed in, do you want to <span className="text-danger" onClick={this.logout}>sign out</span>?</p> : null}
