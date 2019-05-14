@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { loginUser } from '../redux/actions/actions';
+const API_URL = 'https://file-upload-db.herokuapp.com';
 
 class UploadForm extends Component {
 	constructor() {
@@ -52,7 +52,7 @@ class UploadForm extends Component {
 			return (
 				<div id="upload-form">
 					{user.id !== null && user.email !== null && user.username !== null ?
-					<form onSubmit={this.handleSubmit} action="/upload" method="POST" encType="multipart/form-data">
+					<form onSubmit={this.handleSubmit} action={`${API_URL}/upload`} method="POST" encType="multipart/form-data">
 						<div className="mb-5 custom-file">
 							{/* Only accept images */}
 							<input accept="image/*" name="file" onChange={this.handleFile} type="file" className="custom-file-input" required />
@@ -85,4 +85,4 @@ const mapStateToProps = state => ({
     user: state.siteData.user,
 });
 
-export default connect(mapStateToProps, { loginUser })(UploadForm);
+export default connect(mapStateToProps)(UploadForm);

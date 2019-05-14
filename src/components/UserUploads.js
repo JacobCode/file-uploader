@@ -5,6 +5,8 @@ import axios from 'axios';
 
 import { loginUser } from '../redux/actions/actions';
 
+const API_URL = 'https://file-upload-db.herokuapp.com';
+
 class UserUploads extends Component {
 	constructor() {
 		super();
@@ -12,33 +14,34 @@ class UserUploads extends Component {
 			userFiles: [],
 			activeImage: '',
 			chosenFile: '',
-			storage: 0
+			storage: 0,
+			nums: []
 		}
 		this.getUserFiles = this.getUserFiles.bind(this);
 		this.showFile = this.showFile.bind(this);
+		this.handleStorage = this.handleStorage.bind(this);
 	}
 	getUserFiles() {
-		axios.get(`/user/files/${this.props.user._id}`)
+		axios.get(`${API_URL}/user/files/${this.props.user._id}`)
 			.then((res) => this.setState({ userFiles: res.data }))
 			.then(() => { this.props.loginUser(this.props.user) })
 			.catch((err) => console.log('Error getting files, please try again later'));
 	}
 	componentWillMount() {
-		console.log(this.props.user);
-		console.log(JSON.parse(localStorage.user));
 		if (this.props.user) {
 			this.getUserFiles();
 		}
-		const numbers = [];
-		if (this.props.user.files.length >= 1) {
-			this.props.user.files.forEach(file => {
-				numbers.push(file.length)
-			});
-			const getSum = (total, num) => {
-				return total + num;
-			}
-			this.setState({ storage: this.convertBytes(numbers.reduce(getSum)) });
-		}
+		// const numbers = [];
+		// if (this.props.user.files.length >= 1) {
+		// 	this.props.user.files.forEach(file => {
+		// 		numbers.push(file.length)
+		// 	});
+		// 	const getSum = (total, num) => {
+		// 		return total + num;
+		// 	}
+		// 	this.setState({ storage: this.convertBytes(numbers.reduce(getSum)) });
+		// }
+		this.handleStorage();
 	}
 	convertBytes(bytes) {
 		var i = Math.floor(Math.log(bytes) / Math.log(1024)),
@@ -48,7 +51,7 @@ class UserUploads extends Component {
 	}
 	showFile(e, file) {
 		if (file._id) {
-			axios.get(`/files/${file.filename}`)
+			axios.get(`${API_URL}/files/${file.filename}`)
 				.then((res) => {
 					this.setState({ chosenFile: file, activeImage: res.data.data })
 				});
@@ -56,11 +59,23 @@ class UserUploads extends Component {
 	}
 	deleteFile(e, file) {
 		if (file._id) {
-			axios.get(`/files/delete/${file._id}/${this.props.user._id}`)
+			axios.get(`${API_URL}/files/delete/${file._id}/${this.props.user._id}`)
 				.then((res) => {
-					console.log(res);
 				})
 				.then(() => console.log(e))
+		}
+	}
+	handleStorage() {
+		const numbers = [];
+		if (this.props.user.files.length >= 1) {
+			this.props.user.files.forEach((file) => {
+				numbers.push(file.length)
+			});
+			const getSum = (total, num) => {
+				return total + num;
+			}
+			this.setState({ storage: this.convertBytes(numbers.reduce(getSum)) });
+			console.log(this.convertBytes(numbers.reduce(getSum)));
 		}
 	}
 	render() {

@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 
 import { loginUser, signOut } from '../redux/actions/actions';
 
+const API_URL = 'https://file-upload-db.herokuapp.com';
+
 class SignIn extends Component {
 	constructor() {
 		super();
@@ -35,7 +37,7 @@ class SignIn extends Component {
 			username: this.state.lusername,
 			password: this.state.lpassword
 		}
-		axios.post('/login', login).then((res) => {
+		axios.post(`${API_URL}/login`, login).then((res) => {
 			if(res.data.username !== undefined) {
 				this.props.loginUser(res.data);
 				this.setState({ lusername: '', lpassword: '', user: res.data });
@@ -49,7 +51,7 @@ class SignIn extends Component {
 				}, 3500)
 			}
 			localStorage.setItem('user', JSON.stringify(this.props.user));
-		}).catch((err) => this.setState({ error: 'Too many attempts, please try again later' }))
+		}).catch((err) => this.setState({ error: 'Too many attempts, please try again later' }));
 	}
 	registerSubmit(e) {
 		e.preventDefault();
@@ -58,7 +60,7 @@ class SignIn extends Component {
 			username: this.state.rusername,
 			password: this.state.rpassword
 		}
-		axios.post('/register', newUser).then((res) => {
+		axios.post(`${API_URL}/register`, newUser).then((res) => {
 			if (res.status === 200) {
 				this.setState({ remail: '', rusername: '', rpassword: '' });
 				setTimeout(() => {
