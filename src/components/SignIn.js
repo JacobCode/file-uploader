@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 import { loginUser, signOut } from '../redux/actions/actions';
 
-const API_URL = ''
+const API_URL = 'https://file-upload-db.herokuapp.com'
 
 class SignIn extends Component {
 	constructor() {

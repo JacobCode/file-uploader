@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-const API_URL = '';
+const API_URL = 'https://file-upload-db.herokuapp.com';
 
 class UploadForm extends Component {
 	constructor() {

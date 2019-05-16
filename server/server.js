@@ -114,7 +114,7 @@ app.post('/upload', setupLimit(3), upload.single('file'), (req, res) => {
 							res.status(200).redirect('http://localhost:3000/uploads');
 						}
 					} else {
-						res.status(201).send('He');
+						res.status(201).send('There was a problem');
 					}
 				}
 			});
@@ -216,5 +216,24 @@ app.get('/files/delete/:fileId/:userId', (req, res) => {
 			})
 	});
 });
+
+// Download file by filename
+app.get('/files/download/:filename', (req, res) => {
+	gfs.files.find({ filename: req.params.filename }).toArray(function (err, files) {
+		// If file does not exist
+		if (!files || files.length === 0) {
+			return res.status(404).json({ message: 'error' });
+		}
+		// create read stream
+		var readstream = gfs.createReadStream({
+			filename: files[0].filename,
+			root: 'uploads'
+		});
+		// set the proper content type 
+		res.set('Content-Disposition', 'attachment');
+		// Return response
+		return readstream.pipe(res);
+	});
+})
 
 app.listen(process.env.PORT || 3001, () => console.log('\x1b[32m', `Server running on port ${process.env.PORT|| 3001}`));

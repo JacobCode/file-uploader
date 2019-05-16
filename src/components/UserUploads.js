@@ -5,7 +5,7 @@ import axios from 'axios';
 
 import { loginUser } from '../redux/actions/actions';
 
-const API_URL = '';
+const API_URL = 'https://file-upload-db.herokuapp.com';
 
 class UserUploads extends Component {
 	constructor() {
@@ -15,7 +15,8 @@ class UserUploads extends Component {
 			activeImage: '',
 			chosenFile: '',
 			storage: 0,
-			nums: []
+			nums: [],
+			downloadLink: ''
 		}
 		this.getUserFiles = this.getUserFiles.bind(this);
 		this.showFile = this.showFile.bind(this);
@@ -56,9 +57,16 @@ class UserUploads extends Component {
 	// Delete file by id
 	deleteFile(e, file) {
 		if (file._id) {
-			axios.get(`${API_URL}/files/delete/${file._id}/${this.props.user._id}`)
+			axios.get({
+				url: `${API_URL}/files/delete/${file._id}/${this.props.user._id}`,
+  				method: 'GET'
+			})
 				.then((res) => console.log(res.data));
 		}
+	}
+	// Download file by filename
+	downloadFile(e, file) {
+		this.setState({ downloadLink: `${API_URL}/files/download/${file.filename}/` });
 	}
 	componentWillMount() {
 		// If logged in, get users files
@@ -83,11 +91,12 @@ class UserUploads extends Component {
 								<div className="w-100 d-flex justify-content-between mb-4 border-bottom border-muted" key={file._id}>
 									<p onClick={e => this.showFile(e, file)} style={{width: '50%'}} className="text-left">{file.metadata.name}</p>
 									<p onClick={e => this.deleteFile(e, file)} style={{width: '15%'}} className="text-right">{this.convertBytes(file.length)}</p>
-									<p style={{width: '35%'}} className="text-right">{file.contentType}</p>
+									<p onClick={e => this.downloadFile(e, file)} style={{width: '35%'}} className="text-right">{file.contentType}</p>
 								</div>
 							)
 						})}
 					</div>
+					{this.state.downloadLink.length > 0 ? <a download="download" href={this.state.downloadLink} className="btn btn-primary">Download File</a> : null}
 				</div>
 				: null }
 				{this.state.userFiles.length === 0 && this.props.user.username !== null ? 'No Files Found' : null}
