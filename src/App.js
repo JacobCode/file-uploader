@@ -21,8 +21,8 @@ class App extends Component {
 					<div className="App container">
 						<Navbar />
 						<Switch>
-							<Route path={process.env.PUBLIC_URL + '/uploads'} component={Uploads} exact />
-							<Route path={process.env.PUBLIC_URL + '/signin'} component={SignIn} exact />
+							<Route path="/uploads" component={Uploads} exact />
+							<Route path="/signin" component={SignIn} exact />
 							<Redirect from="/signup" to="/signin" />
 							<Redirect from="/login" to="/signin" />
 							<Redirect from="/" to="/signin" />
