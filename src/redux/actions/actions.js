@@ -6,7 +6,7 @@ export const loginUser = (user) => dispatch => {
 	dispatch({
 		type: LOGIN_USER,
 		payload: user
-	})
+	});
 }
 
 export const signOut = () => dispatch => {

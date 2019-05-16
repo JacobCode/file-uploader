@@ -5,7 +5,7 @@ import axios from 'axios';
 
 import { loginUser } from '../redux/actions/actions';
 
-const API_URL = 'https://file-upload-db.herokuapp.com';
+const API_URL = '';
 
 class UserUploads extends Component {
 	constructor() {
@@ -19,36 +19,32 @@ class UserUploads extends Component {
 		}
 		this.getUserFiles = this.getUserFiles.bind(this);
 		this.showFile = this.showFile.bind(this);
-		this.handleStorage = this.handleStorage.bind(this);
 	}
 	getUserFiles() {
 		axios.get(`${API_URL}/user/files/${this.props.user._id}`)
-			.then((res) => this.setState({ userFiles: res.data }))
-			.then(() => { this.props.loginUser(this.props.user) })
+			.then((res) => {
+				this.setState({ userFiles: res.data });
+				const numbers = [];
+				if (res.data.length >= 1) {
+					res.data.forEach(file => {
+						numbers.push(file.length)
+					});
+					const getSum = (total, num) => {
+						return total + num;
+					}
+					this.setState({ storage: this.convertBytes(numbers.reduce(getSum)) });
+				}
+			})
 			.catch((err) => console.log('Error getting files, please try again later'));
 	}
-	componentWillMount() {
-		if (this.props.user) {
-			this.getUserFiles();
-		}
-		// const numbers = [];
-		// if (this.props.user.files.length >= 1) {
-		// 	this.props.user.files.forEach(file => {
-		// 		numbers.push(file.length)
-		// 	});
-		// 	const getSum = (total, num) => {
-		// 		return total + num;
-		// 	}
-		// 	this.setState({ storage: this.convertBytes(numbers.reduce(getSum)) });
-		// }
-		this.handleStorage();
-	}
+	// Convert bytes
 	convertBytes(bytes) {
 		var i = Math.floor(Math.log(bytes) / Math.log(1024)),
 			sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 
 		return (bytes / Math.pow(1024, i)).toFixed(2) * 1 + '' + sizes[i];
 	}
+	// Show image/file info
 	showFile(e, file) {
 		if (file._id) {
 			axios.get(`${API_URL}/files/${file.filename}`)
@@ -57,25 +53,17 @@ class UserUploads extends Component {
 				});
 		}
 	}
+	// Delete file by id
 	deleteFile(e, file) {
 		if (file._id) {
 			axios.get(`${API_URL}/files/delete/${file._id}/${this.props.user._id}`)
-				.then((res) => {
-				})
-				.then(() => console.log(e))
+				.then((res) => console.log(res.data));
 		}
 	}
-	handleStorage() {
-		const numbers = [];
-		if (this.props.user.files.length >= 1) {
-			this.props.user.files.forEach((file) => {
-				numbers.push(file.length)
-			});
-			const getSum = (total, num) => {
-				return total + num;
-			}
-			this.setState({ storage: this.convertBytes(numbers.reduce(getSum)) });
-			console.log(this.convertBytes(numbers.reduce(getSum)));
+	componentWillMount() {
+		// If logged in, get users files
+		if (this.props.user._id !== null) {
+			this.getUserFiles();
 		}
 	}
 	render() {
@@ -83,7 +71,7 @@ class UserUploads extends Component {
 			<div id="user-uploads">
 				{this.state.userFiles.length > 0 ?
 				<div className="uploads">
-					<div className="mb-5 d-flex justify-content-between align-items-center text-warning"><h2>Your Files</h2><span>{this.state.storage} / 50MB</span></div>
+					<div className="mb-5 d-flex justify-content-between align-items-center text-warning"><h2>Your Files</h2><span>{this.state.storage} / 25MB</span></div>
 					<div className="w-100 d-flex justify-content-between mb-3 text-muted">
 						<p style={{width: '50%'}} className="text-left">Name:</p>
 						<p style={{width: '15%'}} className="text-right">Size:</p>
@@ -109,7 +97,8 @@ class UserUploads extends Component {
 				: 
 				this.state.chosenFile.contentType === 'image/svg+xml' ? <img className="d-flex mw-100" src={`data:image/svg+xml;base64,${this.state.activeImage}`} alt='null' />
 				:
-				this.state.chosenFile.contentType === 'image/jpeg'}
+				this.state.chosenFile.contentType === 'image/jpeg' ? <img className="d-flex mw-100" src={`data:image/jpeg;base64,${this.state.activeImage}`} alt='null' />
+				: null}
 			</div>
 		)
 	}

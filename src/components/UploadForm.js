@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-const API_URL = 'https://file-upload-db.herokuapp.com';
+const API_URL = '';
 
 class UploadForm extends Component {
 	constructor() {
@@ -25,14 +25,14 @@ class UploadForm extends Component {
 	}
 	componentWillMount() {
 		const numbers = [];
-		if (JSON.parse(localStorage.user).files.length >= 1) {
+		if (this.props.user.files.length >= 1) {
 			JSON.parse(localStorage.user).files.forEach(file => {
 				numbers.push(file.length)
 			});
 			const getSum = (total, num) => {
 				return total + num;
 			}
-			this.setState({ storage: numbers.reduce(getSum) })
+			this.setState({ storage: numbers.reduce(getSum) });
 		}
 	}
 	handleSubmit(e) {

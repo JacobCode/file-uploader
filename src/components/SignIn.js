@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 import { loginUser, signOut } from '../redux/actions/actions';
 
-const API_URL = 'https://file-upload-db.herokuapp.com';
+const API_URL = ''
 
 class SignIn extends Component {
 	constructor() {
@@ -37,21 +37,26 @@ class SignIn extends Component {
 			username: this.state.lusername,
 			password: this.state.lpassword
 		}
-		axios.post(`${API_URL}/login`, login).then((res) => {
-			if(res.data.username !== undefined) {
-				this.props.loginUser(res.data);
-				this.setState({ lusername: '', lpassword: '', user: res.data });
-				setTimeout(() => {
-					window.location.pathname = '/uploads';
-				}, 500);
-			} else {
-				this.setState({ error: res.data })
-				setTimeout(() => {
-					this.setState({ error: '' })
-				}, 3500)
-			}
-			localStorage.setItem('user', JSON.stringify(this.props.user));
-		}).catch((err) => this.setState({ error: 'Too many attempts, please try again later' }));
+		axios.post(`${API_URL}/login`, login)
+			.then((res) => {
+				if(res.data.username !== undefined) {
+					this.props.loginUser(res.data);
+					this.setState({ lusername: '', lpassword: '', user: res.data });
+					setTimeout(() => {
+						window.location.pathname = '/uploads';
+					}, 500);
+				} else {
+					this.setState({ error: res.data })
+					setTimeout(() => {
+						this.setState({ error: '' })
+					}, 3500)
+				}
+				localStorage.setItem('user', JSON.stringify(this.props.user));
+			}).catch((err) => {
+				if (err.response !== undefined) {
+					this.setState({ error: 'Too many attempts, please try again later' });
+				}
+			});
 	}
 	registerSubmit(e) {
 		e.preventDefault();
@@ -72,7 +77,7 @@ class SignIn extends Component {
 				setTimeout(() => { this.setState({ error: '' })}, 2000);
 			}
 		}).catch((err) => {
-			console.log(err.response);
+			console.log(err.response.data);
 			if (err.response.status === 429) {
 				this.setState({ error: err.response.data });
 				setTimeout(() => { this.setState({ error: '' })}, 2000);
