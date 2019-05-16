@@ -1,5 +1,3 @@
-// API deployed on heroku
-
 const express = require('express');
 const app = express();
 const rateLimit = require('express-rate-limit');
@@ -27,8 +25,7 @@ app.enable("trust proxy");
 var setupLimit = (maxAttempts) => {
 	return rateLimit({
 		windowMs: 60000 * 60 * 60,
-		max: maxAttempts,
-		message: 'Too many registration attempts, please try again later.',
+		max: maxAttempts
 	});
 }
 
@@ -36,7 +33,7 @@ var setupLimit = (maxAttempts) => {
 const User = require('./models/user');
 
 // DB Config
-const db = process.env.MONGODB_URI;
+const db = process.env.MONGODB_URI || 'mongodb://jacob123:jacob456@ds153766.mlab.com:53766/file-uploader-db';
 
 // Connect to mongo
 mongoose.connect(db, {useNewUrlParser: true })
@@ -186,7 +183,7 @@ app.post('/register', setupLimit(3), (req, res) => {
 });
 
 // Login
-app.post('/login', setupLimit(8), (req, res) => {
+app.post('/login', setupLimit(15), (req, res) => {
 	User.find({ username: req.body.username })
 		.then((results) => {
 			// Compare passwords
