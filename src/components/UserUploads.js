@@ -5,6 +5,9 @@ import axios from 'axios';
 
 import { loginUser } from '../redux/actions/actions';
 
+import noFiles from '../media/empty.svg';
+import '../user-uploads.css';
+
 const API_URL = 'https://file-upload-db.herokuapp.com';
 
 class UserUploads extends Component {
@@ -16,7 +19,8 @@ class UserUploads extends Component {
 			chosenFile: '',
 			storage: 0,
 			nums: [],
-			downloadLink: ''
+			downloadLink: '',
+			storagePercent: ''
 		}
 		this.getUserFiles = this.getUserFiles.bind(this);
 		this.showFile = this.showFile.bind(this);
@@ -33,7 +37,10 @@ class UserUploads extends Component {
 					const getSum = (total, num) => {
 						return total + num;
 					}
-					this.setState({ storage: this.convertBytes(numbers.reduce(getSum)) });
+					this.setState({
+						storage: this.convertBytes(numbers.reduce(getSum)),
+						storagePercent: (((numbers.reduce(getSum) / 1024) / 25000) * 100).toFixed(2)
+					});
 				}
 			})
 			.catch((err) => console.log('Error getting files, please try again later'));
@@ -57,11 +64,10 @@ class UserUploads extends Component {
 	// Delete file by id
 	deleteFile(e, file) {
 		if (file._id) {
-			axios.get({
-				url: `${API_URL}/files/delete/${file._id}/${this.props.user._id}`,
-  				method: 'GET'
-			})
-				.then((res) => console.log(res.data));
+			axios.get(`${API_URL}/files/delete/${file._id}/${this.props.user._id}`)
+				.then((res) => {
+					this.setState({ userFiles: this.state.userFiles.filter((f) => f._id !== file._id) })
+				});
 		}
 	}
 	// Download file by filename
@@ -76,22 +82,34 @@ class UserUploads extends Component {
 	}
 	render() {
 		return (
-			<div id="user-uploads">
+			<div id="user-uploads" className="mb-5">
 				{this.state.userFiles.length > 0 ?
 				<div className="uploads">
-					<div className="mb-5 d-flex justify-content-between align-items-center text-warning"><h2>Your Files</h2><span>{this.state.storage} / 25MB</span></div>
-					<div className="w-100 d-flex justify-content-between mb-3 text-muted">
+					<header className="mb-5 d-flex justify-content-between align-items-center text-warning">
+						<h2>Your Files</h2>
+						<div className="d-flex flex-column">
+							<div className="mb-2">
+								{this.state.storage} / 25MB
+							</div>
+							<div className="progress" style={{height:'8px'}}>
+								<div className="progress-bar bg-primary" style={{width:`${this.state.storagePercent}%`}}></div>
+							</div>
+						</div>
+					</header>
+					<div className="titles w-100 d-flex justify-content-between mb-3 text-muted">
 						<p style={{width: '50%'}} className="text-left">Name:</p>
-						<p style={{width: '15%'}} className="text-right">Size:</p>
-						<p style={{width: '35%'}} className="text-right">Type:</p>
+						<p style={{width: '15%'}} className="text-left">Size:</p>
+						<p style={{width: '30%'}} className="text-left pl-3">Type:</p>
+						<p style={{width: '5%'}}></p>
 					</div>
 					<div className="files d-flex flex-column">
 						{this.state.userFiles.map((file) => {
 							return (
-								<div className="w-100 d-flex justify-content-between mb-4 border-bottom border-muted" key={file._id}>
+								<div className="file w-100 d-flex justify-content-between mb-4 border-bottom border-muted" key={file._id}>
 									<p onClick={e => this.showFile(e, file)} style={{width: '50%'}} className="text-left">{file.metadata.name}</p>
-									<p onClick={e => this.deleteFile(e, file)} style={{width: '15%'}} className="text-right">{this.convertBytes(file.length)}</p>
-									<p onClick={e => this.downloadFile(e, file)} style={{width: '35%'}} className="text-right">{file.contentType}</p>
+									<p style={{width: '15%'}} className="d-flex align-items-center text-left">{this.convertBytes(file.length)}</p>
+									<p onClick={e => this.downloadFile(e, file)} style={{width: '30%', fontSize: '1.5rem'}} className="pl-3 d-flex align-items-center text-left"><i className="fas fa-file-pdf"></i></p>
+									<p onClick={e => this.deleteFile(e, file)} className="d-flex align-items-center" style={{width: '5%'}}><i className="far fa-trash-alt text-right" style={{fontSize: '1.25rem'}}></i></p>
 								</div>
 							)
 						})}
@@ -99,7 +117,10 @@ class UserUploads extends Component {
 					{this.state.downloadLink.length > 0 ? <a download="download" href={this.state.downloadLink} className="btn btn-primary">Download File</a> : null}
 				</div>
 				: null }
-				{this.state.userFiles.length === 0 && this.props.user.username !== null ? 'No Files Found' : null}
+				{this.state.userFiles.length === 0 && this.props.user.username !== null ?
+				<div className="mb-5 d-flex justify-content-center align-items-center">
+					<img src={noFiles} style={{maxWidth: '300px'}} alt="No Files Found" />
+				</div> : null}
 
 				{/* Load different image types */}
 				{this.state.chosenFile.contentType === 'image/png' ? <img className="d-flex mw-100" src={`data:image/pdf;base64,${this.state.activeImage}`} alt='null' />

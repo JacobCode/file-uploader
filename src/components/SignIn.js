@@ -34,7 +34,7 @@ class SignIn extends Component {
 	loginSubmit(e) {
 		e.preventDefault();
 		const login = {
-			username: this.state.lusername,
+			username: this.state.lusername.toLowerCase(),
 			password: this.state.lpassword
 		}
 		axios.post(`${API_URL}/login`, login)
@@ -61,8 +61,8 @@ class SignIn extends Component {
 	registerSubmit(e) {
 		e.preventDefault();
 		const newUser = {
-			email: this.state.remail,
-			username: this.state.rusername,
+			email: this.state.remail.toLowerCase(),
+			username: this.state.rusername.toLowerCase(),
 			password: this.state.rpassword
 		}
 		axios.post(`${API_URL}/register`, newUser).then((res) => {
@@ -104,62 +104,62 @@ class SignIn extends Component {
 				{this.state.showLogin === true && user.username === null ? 
 				<form onSubmit={this.loginSubmit} className="form mb-5">
 					{/* Login Form */}
-					<h1 className="mb-4 text-warning">Login</h1>
-					<div className="input-group mb-4">
+					<h1 className="mb-5 text-warning">Login</h1>
+					<div className="input-group mb-5">
 						<div className="input-group-prepend">
 							<span className="input-group-text"><i className="fas fa-user"></i></span>
 						</div>
 						<input onChange={this.handleInput} value={this.state.lusername} type="text" name="lusername" id="lusername" className="form-control" placeholder="Username" aria-label="Username" />
 					</div>
 
-					<div className="input-group mb-4">
+					<div className="input-group mb-5">
 						<div className="input-group-prepend">
 							<span className="input-group-text"><i className="fas fa-key"></i></span>
 						</div>
 						<input onChange={this.handleInput} value={this.state.lpassword} type="password" name="lpassword" id="lpassword" className="form-control" placeholder="Password" aria-label="Password" />
 					</div>
 
-					<div className="form-group">
-						<button type="submit" name="lsubmit" className="btn btn-warning btn-md text-white">Sign In</button>
+					<div className="form-group text-right">
+						<button type="submit" name="lsubmit" className="p-0 btn btn-white btn-md outline text-warning text-align-right">Sign In <i className="pl-2 fas fa-arrow-right"></i></button>
 					</div>
-					<div className="text-right">
-						<span onClick={this.changeForm} href="/signin" className="text-primary">Register</span>
+					<div className="text-leftt">
+						<button className="p-0 btn btn-white" onClick={this.changeForm}>Don't have an account? <span className="text-primary">Register</span></button>
 					</div>
 				</form>
 				: null }
 
-				{/* ShowRegister form if not logged in */}
+				{/* Show Register form if not logged in */}
 				{this.state.showLogin === false && user.username === null ?
 				<form onSubmit={this.registerSubmit} className="form mb-5">
 					{/* Register Form */}
-					<h1 className="mb-4 text-warning">Register</h1>
+					<h1 className="mb-5 text-warning">Create Account</h1>
 
-					<div className="input-group mb-4">
+					<div className="input-group mb-5">
 						<div className="input-group-prepend">
 							<span className="input-group-text"><i className="fas fa-envelope"></i></span>
 						</div>
 						<input onChange={this.handleInput} value={this.state.remail} type="email" name="remail" id="remail" className="form-control" placeholder="Email" aria-label="Email" />
 					</div>
 
-					<div className="input-group mb-4">
+					<div className="input-group mb-5">
 						<div className="input-group-prepend">
 							<span className="input-group-text"><i className="fas fa-user"></i></span>
 						</div>
 						<input onChange={this.handleInput} value={this.state.rusername} type="text" name="rusername" id="rusername" className="form-control" placeholder="Username" aria-label="Username" />
 					</div>
 
-					<div className="input-group mb-4">
+					<div className="input-group mb-5">
 						<div className="input-group-prepend">
 							<span className="input-group-text"><i className="fas fa-key"></i></span>
 						</div>
 						<input onChange={this.handleInput} value={this.state.rpassword} type="password" name="rpassword" id="rpassword" className="form-control" placeholder="Password" aria-label="Password" />
 					</div>
 
-					<div className="form-group">
-						<button type="submit" name="rsubmit" className="btn btn-warning btn-md text-white">Sign Up</button>
+					<div className="form-group text-right">
+						<button type="submit" name="rsubmit" className="p-0 btn btn-white btn-md text-warning">Sign Up <i className="pl-2 fas fa-arrow-right"></i></button>
 					</div>
-					<div className="text-right">
-						<span onClick={this.changeForm} href="/signin" className="text-primary">Login</span>
+					<div className="text-left">
+						<button className="p-0 btn btn-white" onClick={this.changeForm}>Already have an account? <span className="text-primary">Login</span></button>
 					</div>
 				</form> : null }
 

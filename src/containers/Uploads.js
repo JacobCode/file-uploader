@@ -8,8 +8,8 @@ export default class Uploads extends Component {
 	render() {
 		return (
 			<div id="uploads">
-				<UploadForm />
 				<UserUploads />
+				<UploadForm />
 			</div>
 		)
 	}

@@ -1,0 +1,29 @@
+#user-uploads {
+	
+}
+#user-uploads .uploads {
+
+}
+#user-uploads .uploads header {
+
+}
+#user-uploads .uploads .titles {
+
+}
+#user-uploads .uploads .files {
+	
+}
+#user-uploads .uploads .files .file {
+	
+}
+#user-uploads .uploads .files .file p {
+	font-size: 1.2rem;
+}
+#user-uploads .uploads .files .file .fa-trash-alt {
+	color: #cfcfcf;
+	transition: all 0.4s ease-in-out;
+	cursor: pointer;
+}
+#user-uploads .uploads .files .file .fa-trash-alt:hover {
+	color: red;
+}

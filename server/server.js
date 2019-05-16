@@ -14,7 +14,9 @@ const crypto = require('crypto');
 const BJSON = require('buffer-json');
 
 // Express Middleware
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({
+	extended: true
+}));
 app.use(bodyParser.json());
 app.use(methodOverride('_method'))
 app.use(cors());
@@ -36,12 +38,20 @@ const User = require('./models/user');
 const db = process.env.MONGODB_URI || 'mongodb://jacob123:jacob456@ds153766.mlab.com:53766/file-uploader-db';
 
 // Connect to mongo
-mongoose.connect(db, {useNewUrlParser: true })
-    .then(() => { console.log('✅ MONGO DB CONNECTED')})
-    .catch(() => { console.log('🛑 MONGO DB ERROR')});
+mongoose.connect(db, {
+		useNewUrlParser: true
+	})
+	.then(() => {
+		console.log('✅ MONGO DB CONNECTED')
+	})
+	.catch(() => {
+		console.log('🛑 MONGO DB ERROR')
+	});
 
 // Init gfs
-const conn = mongoose.createConnection(db, { useNewUrlParser: true })
+const conn = mongoose.createConnection(db, {
+	useNewUrlParser: true
+})
 let gfs;
 conn.once('open', () => {
 	gfs = Grid(conn.db, mongoose.mongo);
@@ -61,7 +71,12 @@ const storage = new GridFsStorage({
 				const filename = buf.toString('hex') + path.extname(file.originalname);
 				const fileInfo = {
 					fileName: filename,
-					metadata: { uploadedBy: { uploadedBy } = storage.configuration.uploadedBy, name: file.originalname.trim() },
+					metadata: {
+						uploadedBy: {
+							uploadedBy
+						} = storage.configuration.uploadedBy,
+						name: file.originalname.trim()
+					},
 					bucketName: 'uploads'
 				};
 				resolve(fileInfo);
@@ -69,10 +84,12 @@ const storage = new GridFsStorage({
 		});
 	}
 });
-const upload = multer({ storage });
+const upload = multer({
+	storage
+});
 
 // Upload files to db
-app.post('/upload', setupLimit(3), upload.single('file'), (req, res) => {
+app.post('/upload', setupLimit(15), upload.single('file'), (req, res) => {
 	if (req.file !== undefined) {
 		gfs.files.find().toArray((err, files) => {
 			// If no files
@@ -107,7 +124,9 @@ app.post('/upload', setupLimit(3), upload.single('file'), (req, res) => {
 							// Add new file to users current files
 							const output = [...arr, files.filter((f) => f.metadata.uploadedBy === req.body.id)[0]];
 							// Update and save users files
-							User.findByIdAndUpdate(req.body.id, { files: output }, (error) => {
+							User.findByIdAndUpdate(req.body.id, {
+								files: output
+							}, (error) => {
 								if (error) console.log(error, '🛑');
 							});
 							// Send 'ok' and redirect
@@ -124,17 +143,25 @@ app.post('/upload', setupLimit(3), upload.single('file'), (req, res) => {
 
 // Get file path
 app.get('/files/:filename', (req, res) => {
-	gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
+	gfs.files.findOne({
+		filename: req.params.filename
+	}, (err, file) => {
 		// If no files
 		if (!file || file.length === 0) {
-			res.status(200).send({ error: 'No files found' });
+			res.status(200).send({
+				error: 'No files found'
+			});
 		}
 		if (file !== null) {
 			const readstream = gfs.createReadStream(file.filename);
 			// readstream.pipe(res);
 			readstream.on('data', function (chunk) {
-				const str = BJSON.stringify({ buf: Buffer.from(chunk) });
-				res.status(200).send({ data: JSON.parse(str)['buf']['data'].substr(7) })
+				const str = BJSON.stringify({
+					buf: Buffer.from(chunk)
+				});
+				res.status(200).send({
+					data: JSON.parse(str)['buf']['data'].substr(7)
+				})
 			});
 			readstream.on('error', e => {
 				console.log('error');
@@ -167,7 +194,9 @@ app.post('/register', setupLimit(3), (req, res) => {
 			});
 			newUser.save()
 				.then((user) => {
-					res.status(200).redirect({ message: 'New user registered' })
+					res.status(200).redirect({
+						message: 'New user registered'
+					})
 				})
 				.catch((err) => {
 					// If duplicate values for email or username
@@ -184,7 +213,9 @@ app.post('/register', setupLimit(3), (req, res) => {
 
 // Login
 app.post('/login', setupLimit(15), (req, res) => {
-	User.find({ username: req.body.username })
+	User.find({
+			username: req.body.username
+		})
 		.then((results) => {
 			// Compare passwords
 			const comparePasswords = async (text, hash) => {
@@ -205,12 +236,19 @@ app.post('/login', setupLimit(15), (req, res) => {
 
 // Delete File
 app.get('/files/delete/:fileId/:userId', (req, res) => {
-	gfs.remove({ _id: req.params.fileId, root: 'uploads' }, (err, gridStore) => {
-		if (err) return res.status(404).json({ error: err });
+	gfs.remove({
+		_id: req.params.fileId,
+		root: 'uploads'
+	}, (err, gridStore) => {
+		if (err) return res.status(404).json({
+			error: err
+		});
 		res.status(200).send(`Deleted ${req.params.fileId}`);
 		User.findById(req.params.userId)
 			.then((data) => {
-				User.findByIdAndUpdate(req.params.userId, { files: data.files.filter((file) => file._id.toString() !== req.params.fileId) }, (error) => {
+				User.findByIdAndUpdate(req.params.userId, {
+					files: data.files.filter((file) => file._id.toString() !== req.params.fileId)
+				}, (error) => {
 					if (error) console.log(error, '🛑');
 				});
 			})
@@ -219,10 +257,14 @@ app.get('/files/delete/:fileId/:userId', (req, res) => {
 
 // Download file by filename
 app.get('/files/download/:filename', (req, res) => {
-	gfs.files.find({ filename: req.params.filename }).toArray(function (err, files) {
+	gfs.files.find({
+		filename: req.params.filename
+	}).toArray(function (err, files) {
 		// If file does not exist
 		if (!files || files.length === 0) {
-			return res.status(404).json({ message: 'error' });
+			return res.status(404).json({
+				message: 'error'
+			});
 		}
 		// create read stream
 		var readstream = gfs.createReadStream({

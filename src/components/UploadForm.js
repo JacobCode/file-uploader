@@ -52,16 +52,19 @@ class UploadForm extends Component {
 			return (
 				<div id="upload-form">
 					{user.id !== null && user.email !== null && user.username !== null ?
-					<form onSubmit={this.handleSubmit} action={`${API_URL}/upload`} method="POST" encType="multipart/form-data">
-						<div className="mb-5 custom-file">
-							{/* Only accept images */}
-							<input accept="image/*" name="file" onChange={this.handleFile} type="file" className="custom-file-input" required />
-							<label className="custom-file-label">{this.state.fileName}</label>
-							{/* Uploaded by user */}
-							<input name="id" type="hidden" value={user._id} />
-						</div>
-						<button className="btn btn-primary mb-5" type="submit">Upload</button>
-					</form> : null}
+					<div>
+						<h2 className="mb-4 text-warning">Add A File</h2>
+						<form style={{maxWidth: '600px'}} onSubmit={this.handleSubmit} action={`${API_URL}/upload`} method="POST" encType="multipart/form-data">
+							<div className="mb-4 custom-file">
+								{/* Only accept images */}
+								<input name="file" onChange={this.handleFile} type="file" className="custom-file-input" required />
+								<label style={{fontSize: '1.2rem'}} className="custom-file-label">{this.state.fileName}</label>
+								{/* Uploaded by user */}
+								<input name="id" type="hidden" value={user._id} />
+							</div>
+							<button className="btn btn-primary mb-5" type="submit"><i style={{fontSize: '1.2rem'}} className="fas fa-plus"></i></button>
+						</form>
+					</div> : null}
 					{this.state.error !== null ?
 					<div className="alert alert-danger" role="alert">
 						{this.state.error}
