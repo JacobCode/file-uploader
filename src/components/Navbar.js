@@ -12,7 +12,7 @@ class Navbar extends Component {
 	logout() {
 		this.props.signOut();
 		localStorage.clear();
-		window.location.pathname = '/signin';
+		window.location.pathname = '/';
 	}
 	render() {
 		return (
@@ -21,7 +21,7 @@ class Navbar extends Component {
 				<div className="links d-flex justify-content-between align-items-center">
 					<a className="mr-3" href="/uploads">My Uploads</a>
 					{this.props.user.username === null ? 
-					<a href="/signin">Sign In</a>
+					<a href="/">Sign In</a>
 					:
 					<p className="mb-0" onClick={this.logout}>Logout, <span className="text-secondary">{this.props.user.username}</span></p>}
 				</div>

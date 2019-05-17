@@ -69,7 +69,7 @@ class SignIn extends Component {
 			if (res.status === 200) {
 				this.setState({ remail: '', rusername: '', rpassword: '' });
 				setTimeout(() => {
-					window.location.pathname = '/signin';
+					window.location.pathname = '/';
 				}, 1000);
 			}
 			if (res.status === 201) {

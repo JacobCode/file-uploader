@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import store from './redux/store';
 
 // Reset default css on browsers
@@ -21,12 +21,8 @@ class App extends Component {
 					<div className="App container">
 						<Navbar />
 						<Switch>
+							<Route path="/" component={SignIn} exact />
 							<Route path="/uploads" component={Uploads} exact />
-							<Route path="/signin" component={SignIn} exact />
-							<Redirect from="/signup" to="/signin" />
-							<Redirect from="/login" to="/signin" />
-							<Redirect from="/" to="/signin" />
-							<Redirect from="/upload" to="/uploads" />
 						</Switch>
 					</div>
 				</BrowserRouter>

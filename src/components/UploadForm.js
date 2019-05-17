@@ -74,7 +74,7 @@ class UploadForm extends Component {
 			)
 		} else {
 			return (
-				<p>Please <a href="/signin">sign in</a> to view your uploads</p>
+				<p>Please <a href="/">sign in</a> to view your uploads</p>
 			)
 		}
 	}
