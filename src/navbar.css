@@ -1,0 +1,39 @@
+nav {
+
+}
+nav button.navbar-toggler {
+	border: none !important;
+	outline: none !important;
+	box-shadow: none !important;
+}
+nav a.navbar-brand {
+
+}
+nav .links {
+
+}
+nav .links a {
+
+}
+
+button {
+	display: none;
+}
+
+.collapse {
+	/* display: none; */
+}
+
+@media screen and (max-width: 746px) {
+	nav .links {
+		display: none !important;
+	}
+
+	button {
+		display: inline-block
+	}
+
+	.collapse {
+		display: initial;
+	}
+}

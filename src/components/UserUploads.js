@@ -8,6 +8,8 @@ import { loginUser } from '../redux/actions/actions';
 import noFiles from '../media/empty.svg';
 import '../user-uploads.css';
 
+import FileModal from './FileModal';
+
 const API_URL = 'https://file-upload-db.herokuapp.com';
 
 class UserUploads extends Component {
@@ -39,7 +41,7 @@ class UserUploads extends Component {
 					}
 					this.setState({
 						storage: this.convertBytes(numbers.reduce(getSum)),
-						storagePercent: (((numbers.reduce(getSum) / 1024) / 25000) * 100).toFixed(2)
+						storagePercent: (((numbers.reduce(getSum) / 1024) / 10000) * 100).toFixed(3)
 					});
 				}
 			})
@@ -58,6 +60,9 @@ class UserUploads extends Component {
 			axios.get(`${API_URL}/files/${file.filename}`)
 				.then((res) => {
 					this.setState({ chosenFile: file, activeImage: res.data.data })
+				})
+				.catch((err) => {
+					console.log(err);
 				});
 		}
 	}
@@ -72,6 +77,7 @@ class UserUploads extends Component {
 	}
 	// Download file by filename
 	downloadFile(e, file) {
+		console.log(`${API_URL}/files/download/${file.filename}/`)
 		this.setState({ downloadLink: `${API_URL}/files/download/${file.filename}/` });
 	}
 	componentWillMount() {
@@ -81,56 +87,80 @@ class UserUploads extends Component {
 		}
 	}
 	render() {
-		return (
-			<div id="user-uploads" className="mb-5">
-				{this.state.userFiles.length > 0 ?
-				<div className="uploads">
-					<header className="mb-5 d-flex justify-content-between align-items-center text-warning">
-						<h2>Your Files</h2>
-						<div className="d-flex flex-column">
-							<div className="mb-2">
-								{this.state.storage} / 25MB
-							</div>
-							<div className="progress" style={{height:'8px'}}>
-								<div className="progress-bar bg-primary" style={{width:`${this.state.storagePercent}%`}}></div>
-							</div>
-						</div>
-					</header>
-					<div className="titles w-100 d-flex justify-content-between mb-3 text-muted">
-						<p style={{width: '50%'}} className="text-left">Name:</p>
-						<p style={{width: '15%'}} className="text-left">Size:</p>
-						<p style={{width: '30%'}} className="text-left pl-3">Type:</p>
-						<p style={{width: '5%'}}></p>
-					</div>
-					<div className="files d-flex flex-column">
-						{this.state.userFiles.map((file) => {
-							return (
-								<div className="file w-100 d-flex justify-content-between mb-4 border-bottom border-muted" key={file._id}>
-									<p onClick={e => this.showFile(e, file)} style={{width: '50%'}} className="text-left">{file.metadata.name}</p>
-									<p style={{width: '15%'}} className="d-flex align-items-center text-left">{this.convertBytes(file.length)}</p>
-									<p onClick={e => this.downloadFile(e, file)} style={{width: '30%', fontSize: '1.5rem'}} className="pl-3 d-flex align-items-center text-left"><i className="fas fa-file-pdf"></i></p>
-									<p onClick={e => this.deleteFile(e, file)} className="d-flex align-items-center" style={{width: '5%'}}><i className="far fa-trash-alt text-right" style={{fontSize: '1.25rem'}}></i></p>
+		console.log(this.state.chosenFile);
+		const { chosenFile } = this.state;
+		if (this.props.user._id !== null) {
+			return (
+				<div id="user-uploads" className="mb-5" style={{background: 'white', padding: '1.5rem'}}>
+					{this.state.userFiles.length > 0 ?
+					<div className="uploads">
+						{/* Modal */}
+						<FileModal />
+						{/* Header and storage info */}
+						<header className="mb-5 d-flex justify-content-between align-items-center">
+							<h2>Your Files</h2>
+							<div className="d-flex flex-column">
+								<div className="mb-2 text-primary">
+									{this.state.storage} / 10MB
 								</div>
-							)
-						})}
+								<div className="progress" style={{height:'8px'}}>
+									<div className="progress-bar" style={{width:`${this.state.storagePercent}%`, background: '#F12C61'}}></div>
+								</div>
+							</div>
+						</header>
+						{/* File info titles */}
+						<div className="titles w-100 d-flex justify-content-between mb-3 text-muted">
+							<p style={{width: '55%'}} className="text-left">Name:</p>
+							<p style={{width: '20%'}} className="text-left">Size:</p>
+							<p style={{width: '20%'}} className="text-left pl-3">Type:</p>
+							<p style={{width: '5%'}}></p>
+						</div>
+						{/* User's files */}
+						<div className="files d-flex flex-column">
+							{this.state.userFiles.map((file) => {
+								return (
+									<div className="file w-100 d-flex justify-content-between mb-4 border-bottom border-muted" key={file._id}>
+										<p onClick={e => this.showFile(e, file)} style={{width: '55%'}} className="show-file">
+											<button type="button" className="btn btn-white p-0 text-primary d-flex align-items-center text-left" data-toggle="modal" data-target="#exampleModal">{file.metadata.customName} <i style={{fontSize: '0.825rem'}} className="pl-2 fas fa-chevron-down"></i></button>
+										</p>
+										<p style={{width: '20%'}} className="d-flex align-items-center text-left">{this.convertBytes(file.length)}</p>
+										{/* Show different file icons depending on the file contentType */}
+										<p onClick={e => this.downloadFile(e, file)} style={{width: '20%', fontSize: '1.4rem'}} className="pl-3 d-flex align-items-center text-left">
+											{/* Load different file types */}
+											{file.contentType === 'image/png' ? <i className="fas fa-file-image"></i>
+											: 
+											file.contentType === 'image/svg+xml' ? <i className="fas fa-file-alt"></i>
+											:
+											file.contentType === 'image/jpeg' ? <i className="fas fa-file-image"></i>
+											: <i className="fas fa-file"></i>}
+										</p>
+										<p onClick={e => this.deleteFile(e, file)} className="d-flex align-items-center" style={{width: '5%'}}><i className="far fa-trash-alt text-right" style={{fontSize: '1.25rem'}}></i></p>
+									</div>
+								)
+							})}
+						</div>
+						{this.state.downloadLink.length > 0 ? <a download="download" href={this.state.downloadLink} className="btn btn-primary">Download File</a> : null}
 					</div>
-					{this.state.downloadLink.length > 0 ? <a download="download" href={this.state.downloadLink} className="btn btn-primary">Download File</a> : null}
-				</div>
-				: null }
-				{this.state.userFiles.length === 0 && this.props.user.username !== null ?
-				<div className="mb-5 d-flex justify-content-center align-items-center">
-					<img src={noFiles} style={{maxWidth: '300px'}} alt="No Files Found" />
-				</div> : null}
+					: null }
+					{this.state.userFiles.length === 0 && this.props.user.username !== null ?
+					<div className="mb-5 d-flex justify-content-center align-items-center">
+						<img src={noFiles} style={{width: '90%', maxWidth: '800px', maxHeight: '400px'}} alt="No Files Found" />
+					</div> : null}
 
-				{/* Load different image types */}
-				{this.state.chosenFile.contentType === 'image/png' ? <img className="d-flex mw-100" src={`data:image/pdf;base64,${this.state.activeImage}`} alt='null' />
-				: 
-				this.state.chosenFile.contentType === 'image/svg+xml' ? <img className="d-flex mw-100" src={`data:image/svg+xml;base64,${this.state.activeImage}`} alt='null' />
-				:
-				this.state.chosenFile.contentType === 'image/jpeg' ? <img className="d-flex mw-100" src={`data:image/jpeg;base64,${this.state.activeImage}`} alt='null' />
-				: null}
-			</div>
-		)
+					{/* Load different image types */}
+					{/* {this.state.chosenFile.contentType === 'image/png' ? <img className="d-flex mw-100" src={`data:image/pdf;base64,${this.state.activeImage}`} alt='null' />
+					: 
+					this.state.chosenFile.contentType === 'image/svg+xml' ? <img className="d-flex mw-100" src={`data:image/svg+xml;base64,${this.state.activeImage}`} alt='null' />
+					:
+					this.state.chosenFile.contentType === 'image/jpeg' ? <img className="d-flex mw-100" src={`data:image/jpeg;base64,${this.state.activeImage}`} alt='null' />
+					: null} */}
+				</div>
+			)
+		} else {
+			return (
+				<div></div>
+			)
+		}
 	}
 }
 

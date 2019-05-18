@@ -7,8 +7,14 @@
 #user-uploads .uploads header {
 
 }
+#user-uploads .uploads header h2 {
+	color: #F12C61;
+}
 #user-uploads .uploads .titles {
 
+}
+#user-uploads .uploads .titles p {
+	color: #cfcfcf;
 }
 #user-uploads .uploads .files {
 	
@@ -19,11 +25,25 @@
 #user-uploads .uploads .files .file p {
 	font-size: 1.2rem;
 }
+#user-uploads .uploads .files .file p.show-file button {
+	outline: none;
+	box-shadow: none;
+	font-size: 1.2rem;
+}
 #user-uploads .uploads .files .file .fa-trash-alt {
 	color: #cfcfcf;
 	transition: all 0.4s ease-in-out;
 	cursor: pointer;
 }
 #user-uploads .uploads .files .file .fa-trash-alt:hover {
-	color: red;
+	color: #F12C61;
+}
+
+@media screen and (max-width: 480px) {
+	#user-uploads .uploads .files .file p {
+		font-size: 1rem;
+	}
+	#user-uploads .uploads .files .file p.show-file button {
+		font-size: 1rem;
+	}
 }
