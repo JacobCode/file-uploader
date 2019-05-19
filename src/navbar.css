@@ -1,19 +1,27 @@
 nav {
-
+	background: none;
+	border-bottom: 1px solid rgba(180, 166, 255, 0.2);
 }
 nav button.navbar-toggler {
 	border: none !important;
 	outline: none !important;
 	box-shadow: none !important;
+	padding: 0;
 }
 nav a.navbar-brand {
-
+	opacity: 0.5;
 }
 nav .links {
 
 }
 nav .links a {
-
+	opacity: 0.5;
+}
+nav .links a.active {
+	opacity: 1 !important;
+}
+nav .links a:hover {
+	opacity: 0.75;
 }
 
 button {

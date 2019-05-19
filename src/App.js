@@ -24,7 +24,7 @@ class App extends Component {
 							<Switch>
 								<Route path="/signin" component={SignIn} exact />
 								<Route path="/uploads" component={Uploads} exact />
-								<Redirect from="/" to="/signin" />
+								{/* <Redirect from="/" to="/signin" /> */}
 							</Switch>
 						</div>
 					</div>

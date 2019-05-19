@@ -8,8 +8,6 @@ import { loginUser } from '../redux/actions/actions';
 import noFiles from '../media/empty.svg';
 import '../user-uploads.css';
 
-import FileModal from './FileModal';
-
 const API_URL = 'https://file-upload-db.herokuapp.com';
 
 class UserUploads extends Component {
@@ -22,7 +20,8 @@ class UserUploads extends Component {
 			storage: 0,
 			nums: [],
 			downloadLink: '',
-			storagePercent: ''
+			storagePercent: '',
+			downloadName: ''
 		}
 		this.getUserFiles = this.getUserFiles.bind(this);
 		this.showFile = this.showFile.bind(this);
@@ -50,20 +49,14 @@ class UserUploads extends Component {
 	// Convert bytes
 	convertBytes(bytes) {
 		var i = Math.floor(Math.log(bytes) / Math.log(1024)),
-			sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+			sizes = [' B', ' KB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB'];
 
-		return (bytes / Math.pow(1024, i)).toFixed(2) * 1 + '' + sizes[i];
+		return (bytes / Math.pow(1024, i)).toFixed(0) * 1 + '' + sizes[i];
 	}
 	// Show image/file info
 	showFile(e, file) {
 		if (file._id) {
-			axios.get(`${API_URL}/files/${file.filename}`)
-				.then((res) => {
-					this.setState({ chosenFile: file, activeImage: res.data.data })
-				})
-				.catch((err) => {
-					console.log(err);
-				});
+			// Get file by ID and display image
 		}
 	}
 	// Delete file by id
@@ -77,8 +70,17 @@ class UserUploads extends Component {
 	}
 	// Download file by filename
 	downloadFile(e, file) {
-		console.log(`${API_URL}/files/download/${file.filename}/`)
-		this.setState({ downloadLink: `${API_URL}/files/download/${file.filename}/` });
+		if (this.state.downloadLink.length > 0) {
+			this.setState({ downloadLink: '', downloadName: '' });
+			setTimeout(() => {
+				this.setState({ downloadLink: `${API_URL}/files/download/${file.filename}/`, downloadName: file.metadata.customName })
+			}, 1000);
+		} else {
+			this.setState({ downloadLink: `${API_URL}/files/download/${file.filename}/`, downloadName: file.metadata.customName });
+			setTimeout(() => {
+				this.setState({ downloadLink: '', downloadName: '' })
+			}, 5000);
+		}
 	}
 	componentWillMount() {
 		// If logged in, get users files
@@ -87,24 +89,20 @@ class UserUploads extends Component {
 		}
 	}
 	render() {
-		console.log(this.state.chosenFile);
-		const { chosenFile } = this.state;
 		if (this.props.user._id !== null) {
 			return (
-				<div id="user-uploads" className="mb-5" style={{background: 'white', padding: '1.5rem'}}>
+				<div id="user-uploads" className="mb-5">
 					{this.state.userFiles.length > 0 ?
 					<div className="uploads">
-						{/* Modal */}
-						<FileModal />
 						{/* Header and storage info */}
 						<header className="mb-5 d-flex justify-content-between align-items-center">
 							<h2>Your Files</h2>
 							<div className="d-flex flex-column">
 								<div className="mb-2 text-primary">
-									{this.state.storage} / 10MB
+									{this.state.storage} / 10 MB
 								</div>
 								<div className="progress" style={{height:'8px'}}>
-									<div className="progress-bar" style={{width:`${this.state.storagePercent}%`, background: '#F12C61'}}></div>
+									<div className="progress-bar bg-primary" style={{width:`${this.state.storagePercent}%`}}></div>
 								</div>
 							</div>
 						</header>
@@ -119,13 +117,13 @@ class UserUploads extends Component {
 						<div className="files d-flex flex-column">
 							{this.state.userFiles.map((file) => {
 								return (
-									<div className="file w-100 d-flex justify-content-between mb-4 border-bottom border-muted" key={file._id}>
-										<p onClick={e => this.showFile(e, file)} style={{width: '55%'}} className="show-file">
-											<button type="button" className="btn btn-white p-0 text-primary d-flex align-items-center text-left" data-toggle="modal" data-target="#exampleModal">{file.metadata.customName} <i style={{fontSize: '0.825rem'}} className="pl-2 fas fa-chevron-down"></i></button>
+									<div className="file w-100 d-flex justify-content-between mb-4" key={file._id}>
+										<p onClick={e => this.downloadFile(e, file)} style={{width: '55%'}} className="show-file">
+											<button type="button" className="btn btn-white p-0 text-primary d-flex align-items-center text-left" data-toggle="modal" data-target="#exampleModal">{file.metadata.customName}</button>
 										</p>
-										<p style={{width: '20%'}} className="d-flex align-items-center text-left">{this.convertBytes(file.length)}</p>
+										<p style={{width: '20%'}} className="file-size d-flex align-items-center text-left">{this.convertBytes(file.length)}</p>
 										{/* Show different file icons depending on the file contentType */}
-										<p onClick={e => this.downloadFile(e, file)} style={{width: '20%', fontSize: '1.4rem'}} className="pl-3 d-flex align-items-center text-left">
+										<p style={{width: '20%', fontSize: '1.4rem'}} className="file-type pl-3 d-flex align-items-center text-left">
 											{/* Load different file types */}
 											{file.contentType === 'image/png' ? <i className="fas fa-file-image"></i>
 											: 
@@ -139,7 +137,7 @@ class UserUploads extends Component {
 								)
 							})}
 						</div>
-						{this.state.downloadLink.length > 0 ? <a download="download" href={this.state.downloadLink} className="btn btn-primary">Download File</a> : null}
+						{this.state.downloadLink.length > 0 ? <a download={this.state.downloadName} href={this.state.downloadLink} className="btn btn-primary">Download File</a> : null}
 					</div>
 					: null }
 					{this.state.userFiles.length === 0 && this.props.user.username !== null ?

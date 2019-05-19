@@ -3,9 +3,11 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
+import '../signin.css';
+
 import { loginUser, signOut } from '../redux/actions/actions';
 
-const API_URL = 'https://file-upload-db.herokuapp.com'
+const API_URL = 'https://file-upload-db.herokuapp.com';
 
 class SignIn extends Component {
 	constructor() {
@@ -66,11 +68,13 @@ class SignIn extends Component {
 			password: this.state.rpassword
 		}
 		axios.post(`${API_URL}/register`, newUser).then((res) => {
+			console.log(res.status)
 			if (res.status === 200) {
-				this.setState({ remail: '', rusername: '', rpassword: '' });
+				this.setState({ remail: '', rusername: '', rpassword: '', message: 'Registration Successful!' });
 				setTimeout(() => {
+					this.setState({ message: '' });
 					window.location.pathname = '/signin';
-				}, 1000);
+				}, 750);
 			}
 			if (res.status === 201) {
 				this.setState({ error: res.data });
@@ -83,8 +87,11 @@ class SignIn extends Component {
 				setTimeout(() => { this.setState({ error: '' })}, 2000);
 			}
 			if (err.response.status === 404) {
-				this.setState({ message: `Registration Successful!`, remail: '', rusername: '', rpassword: '' });
-				setTimeout(() => { this.setState({ message: '' })}, 2000);
+				this.setState({ message: 'Registration Successful!', remail: '', rusername: '', rpassword: '' });
+				setTimeout(() => {
+					this.setState({ message: '' });
+					window.location.pathname = '/signin';
+				}, 750);
 			}
 			}
 		});
@@ -99,13 +106,13 @@ class SignIn extends Component {
 	render() {
 		const { user } = this.props;
 		return (
-			<div id="signin">
+			<div style={{maxWidth: '600px', margin: '0 auto'}} id="signin">
 
 				{/* Show Login form if not logged in */}
 				{this.state.showLogin === true && user.username === null ? 
-				<form onSubmit={this.loginSubmit} className="form mb-5">
+				<form id="login-form" onSubmit={this.loginSubmit} className="form mb-5">
 					{/* Login Form */}
-					<h1 style={{color: '#F12C61'}} className="mb-5">Login</h1>
+					<h1 className="mb-5">Login</h1>
 					<div className="input-group mb-5">
 						<div className="input-group-prepend">
 							<span className="input-group-text"><i className="fas fa-user"></i></span>
@@ -121,7 +128,7 @@ class SignIn extends Component {
 					</div>
 
 					<div className="form-group text-right">
-						<button style={{color: '#F12C61'}} type="submit" name="lsubmit" className="p-0 btn btn-white btn-md outline text-align-right">Sign In <i className="pl-2 fas fa-arrow-right"></i></button>
+						<button type="submit" name="lsubmit" className="change-form p-0 btn btn-white btn-md outline text-align-right">Sign In <i className="pl-2 fas fa-arrow-right"></i></button>
 					</div>
 					<div className="text-left">
 						<button className="p-0 btn btn-white text-white" onClick={this.changeForm}>Don't have an account? <span className="text-primary pl-1">Register</span></button>
@@ -131,9 +138,9 @@ class SignIn extends Component {
 
 				{/* Show Register form if not logged in */}
 				{this.state.showLogin === false && user.username === null ?
-				<form onSubmit={this.registerSubmit} className="form mb-5">
+				<form id="signup-form" onSubmit={this.registerSubmit} className="form mb-5">
 					{/* Register Form */}
-					<h1 style={{color: '#F12C61'}} className="mb-5">Create Account</h1>
+					<h1 className="mb-5">Create Account</h1>
 
 					<div className="input-group mb-5">
 						<div className="input-group-prepend">
@@ -157,7 +164,7 @@ class SignIn extends Component {
 					</div>
 
 					<div className="form-group text-right">
-						<button style={{color: '#F12C61'}} type="submit" name="rsubmit" className="p-0 btn btn-white btn-md">Sign Up <i className="pl-2 fas fa-arrow-right"></i></button>
+						<button style={{color: '#16bb53'}} type="submit" name="rsubmit" className="change-form p-0 btn btn-white btn-md">Sign Up <i className="pl-2 fas fa-arrow-right"></i></button>
 					</div>
 					<div className="text-left">
 						<button className="p-0 btn text-white" onClick={this.changeForm}>Already have an account? <span className="text-primary pl-1">Login</span></button>

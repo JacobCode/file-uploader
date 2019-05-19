@@ -1,0 +1,30 @@
+#signin {
+
+}
+
+.form-control:focus {
+	border-color: #0084ff;
+}
+
+#login-form {
+	
+}
+#login-form h1 {
+}
+
+#signup-form {
+
+}
+#signup-form h1 {
+	
+}
+
+.btn.change-form, .change-form i {
+	background: -webkit-linear-gradient(#16bb53, #78ffaa);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+button.btn {
+	
+}

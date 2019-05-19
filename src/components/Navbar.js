@@ -17,16 +17,16 @@ class Navbar extends Component {
 	}
 	render() {
 		return (
-			<nav className="navbar navbar-light bg-white justify-content-between mb-5">
+			<nav className="navbar navbar-dark justify-content-between" style={{marginBottom: '2rem'}}>
 				<a href="/" className="navbar-brand">File Uploader</a>
 				{/* Links on big screens */}
 				<div className="d-flex links">
-					<a className={`nav-link ${window.location.pathname === '/edit' ? 'active' : null}`} href="/edit">Edit</a>
-					<a className={`nav-link ${window.location.pathname === '/uploads' ? 'active' : null}`} href="/uploads">Uploads</a>
+					<a className={`text-white nav-link ${window.location.pathname === '/edit' ? 'active' : ''}`} href="/edit">Edit</a>
+					<a className={`text-white nav-link ${window.location.pathname === '/uploads' ? 'active' : ''}`} href="/uploads">Uploads</a>
 					{this.props.user.username === null ? 
-					<a className={`nav-link ${window.location.pathname === '/signin' ? 'active' : null}`} href="/signin">Sign In</a>
+					<a className={`text-white nav-link ${window.location.pathname === '/signin' ? 'active' : ''}`} href="/signin">Sign In</a>
 					:
-					<a className={`nav-link ${window.location.pathname === '/signin' ? 'active' : null}`} href="/signin" onClick={this.logout}>Logout</a>}
+					<a className={`text-white nav-link ${window.location.pathname === '/signin' ? 'active' : ''}`} href="/signin" onClick={this.logout}>Logout</a>}
 				</div>
 				{/* Dropdown on small screens */}
 				<button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,13 +34,13 @@ class Navbar extends Component {
 				</button>
 				<div className="collapse navbar-collapse" id="navbarToggleExternalContent">
 					<ul className="navbar-nav mr-auto">
-					<li className={`nav-item ${window.location.pathname === '/edit' ? 'active' : null}`}>
+					<li className={`nav-item ${window.location.pathname === '/edit' ? 'active' : ''}`}>
 						<a className="nav-link" href="/edit">Edit</a>
 					</li>
-					<li className={`nav-item ${window.location.pathname === '/uploads' ? 'active' : null}`}>
+					<li className={`nav-item ${window.location.pathname === '/uploads' ? 'active' : ''}`}>
 						<a className="nav-link" href="/uploads">Uploads</a>
 					</li>
-					<li className={`nav-item ${window.location.pathname === '/signin' ? 'active' : null}`}>
+					<li className={`nav-item ${window.location.pathname === '/signin' ? 'active' : ''}`}>
 						{this.props.user.username === null ? 
 						<a className="nav-link" href="/signin">Sign In</a>
 						:

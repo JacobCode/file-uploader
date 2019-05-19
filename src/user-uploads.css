@@ -8,19 +8,25 @@
 
 }
 #user-uploads .uploads header h2 {
-	color: #F12C61;
 }
 #user-uploads .uploads .titles {
 
 }
 #user-uploads .uploads .titles p {
-	color: #cfcfcf;
+	color: #ffffff49;
+}
+p.file-size {
+	color: #e6e6e6;
+	font-weight: 300;
+}
+p.file-type i {
+	color: rgba(171, 156, 255, 0.49);
 }
 #user-uploads .uploads .files {
 	
 }
 #user-uploads .uploads .files .file {
-	
+	border-bottom: 1px solid rgba(180, 166, 255, 0.2);
 }
 #user-uploads .uploads .files .file p {
 	font-size: 1.2rem;
@@ -30,13 +36,19 @@
 	box-shadow: none;
 	font-size: 1.2rem;
 }
+#user-uploads .uploads .files .file p.file-size {
+	/* color: #16bb53; */
+}
+#user-uploads .uploads .files .file p.file-type i {
+	/* color: #cfcfcf; */
+}
 #user-uploads .uploads .files .file .fa-trash-alt {
-	color: #cfcfcf;
+	color: #e6e6e6;
 	transition: all 0.4s ease-in-out;
 	cursor: pointer;
 }
 #user-uploads .uploads .files .file .fa-trash-alt:hover {
-	color: #F12C61;
+	color: #ff4d4d;
 }
 
 @media screen and (max-width: 480px) {

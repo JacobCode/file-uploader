@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
+// https://file-upload-db.herokuapp.com
 const API_URL = 'https://file-upload-db.herokuapp.com';
 
 class UploadForm extends Component {
@@ -45,12 +46,12 @@ class UploadForm extends Component {
 			// Hide error after 3 seconds
 			setTimeout(() => { this.setState({ error: null }) }, 3500);
 		}
-		// If file is more than 250kb, prevent form from submit and show error
-		if (newFile > 300) {
+		// If file is more than 500kb, prevent form from submit and show error
+		if (newFile > 500) {
 			e.preventDefault();
 			this.setState({ error: 'File is too big, please choose another'});
 			// Hide error after 3 seconds
-			setTimeout(() => { this.setState({ error: null }) }, 3500);
+			// setTimeout(() => { this.setState({ error: null }) }, 3500);
 		}
 	}
 	render() {
@@ -62,25 +63,25 @@ class UploadForm extends Component {
 					<div>
 						<h2 style={{maxWidth: '600px'}} className="mb-5 text-white">Add A File</h2>
 						<form style={{maxWidth: '600px'}} onSubmit={this.handleSubmit} action={`${API_URL}/upload`} method="POST" encType="multipart/form-data">
-							<div className="mb-4 custom-file">
+							<div className="mb-5 custom-file">
 								{/* Only accept images */}
-								<div className="form-group mb-4">
+								<div className="form-group">
 									<input accept="image/*" name="file" onChange={this.handleFile} type="file" className="custom-file-input" required />
 									<label style={{fontSize: '1.2rem'}} className="custom-file-label text-muted">{this.state.fileName}</label>
 								</div>
 							</div>
-							<div className="form-group mb-4">
+							<div className="form-group mb-5">
 								<input style={{fontSize: '1.2rem'}} className="form-control text-muted" placeholder="File Name" name="name" type="text" required />
 							</div>
 							{/* Uploaded by user */}
 							<input name="id" type="hidden" value={user._id} />
 							<div className="form-group">
-								<button style={{borderRadius: '50%', height: '65px', width: '65px', backgroundColor: '#F12C61'}} className="d-flex align-items-center justify-content-center btn text-white mb-5" type="submit"><i style={{fontSize: '1.2rem'}} className="fas fa-plus"></i></button>
+								<button style={{borderRadius: '50%', height: '65px', width: '65px'}} className="bg-primary d-flex align-items-center justify-content-center btn text-white mb-5" type="submit"><i style={{fontSize: '1.2rem'}} className="fas fa-plus"></i></button>
 							</div>
 						</form>
 					</div> : null}
 					{this.state.error !== null ?
-					<div style={{maxWidth: '600px', margin: '0 auto'}} className="alert alert-danger" role="alert">
+					<div style={{maxWidth: '600px', position: 'fixed', bottom: '1.5rem', right: '1.5rem'}} className="m-0 alert alert-danger" role="alert">
 						{this.state.error}
 					</div> 
 					: null}
@@ -88,7 +89,7 @@ class UploadForm extends Component {
 			)
 		} else {
 			return (
-				<p>Please <a href="/">sign in</a> to view your uploads</p>
+				<p style={{marginTop: '-2rem'}} className="text-white">Please <a href="/signin">sign in</a> to view your uploads</p>
 			)
 		}
 	}
