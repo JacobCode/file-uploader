@@ -37,10 +37,10 @@ p.file-type i {
 	font-size: 1.2rem;
 }
 #user-uploads .uploads .files .file p.file-size {
-	/* color: #16bb53; */
+	color: #78ffaa;
 }
 #user-uploads .uploads .files .file p.file-type i {
-	/* color: #cfcfcf; */
+	color: #cfcfcf;
 }
 #user-uploads .uploads .files .file .fa-trash-alt {
 	color: #e6e6e6;

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
+import '../upload.css';
+
 // https://file-upload-db.herokuapp.com
 const API_URL = 'https://file-upload-db.herokuapp.com';
 
@@ -61,13 +63,13 @@ class UploadForm extends Component {
 				<div id="upload-form">
 					{user.id !== null && user.email !== null && user.username !== null ?
 					<div>
-						<h2 style={{maxWidth: '600px'}} className="mb-5 text-white">Add A File</h2>
-						<form style={{maxWidth: '600px'}} onSubmit={this.handleSubmit} action={`${API_URL}/upload`} method="POST" encType="multipart/form-data">
+						<h2 style={{maxWidth: '600px', margin: '0 auto'}} className="mb-5 text-white">Add A File</h2>
+						<form style={{maxWidth: '600px', margin: '0 auto'}} onSubmit={this.handleSubmit} action={`${API_URL}/upload`} method="POST" encType="multipart/form-data">
 							<div className="mb-5 custom-file">
 								{/* Only accept images */}
 								<div className="form-group">
-									<input accept="image/*" name="file" onChange={this.handleFile} type="file" className="custom-file-input" required />
-									<label style={{fontSize: '1.2rem'}} className="custom-file-label text-muted">{this.state.fileName}</label>
+									<input name="file" onChange={this.handleFile} type="file" className="custom-file-input" required />
+									<span id="custom-file-upload" style={{fontSize: '1.2rem'}} className="custom-file-label">{this.state.fileName}</span>
 								</div>
 							</div>
 							<div className="form-group mb-5">

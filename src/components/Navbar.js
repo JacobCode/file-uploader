@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 
 import { signOut } from '../redux/actions/actions';
 
+import menuToggler from '../media/menuToggler.svg';
+
 import '../navbar.css';
 
 class Navbar extends Component {
@@ -17,7 +19,7 @@ class Navbar extends Component {
 	}
 	render() {
 		return (
-			<nav className="navbar navbar-dark justify-content-between" style={{marginBottom: '2rem'}}>
+			<nav className="navbar navbar-dark justify-content-between" style={{marginBottom: '3.5rem'}}>
 				<a href="/" className="navbar-brand">File Uploader</a>
 				{/* Links on big screens */}
 				<div className="d-flex links">
@@ -30,7 +32,8 @@ class Navbar extends Component {
 				</div>
 				{/* Dropdown on small screens */}
 				<button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-					<span className="navbar-toggler-icon"></span>
+					{/* <span className="navbar-toggler-icon"></span> */}
+					<img src={menuToggler} alt="Toggle Menu" />
 				</button>
 				<div className="collapse navbar-collapse" id="navbarToggleExternalContent">
 					<ul className="navbar-nav mr-auto">

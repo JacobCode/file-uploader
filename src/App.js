@@ -8,7 +8,9 @@ import './reset.css';
 
 // Components
 import SignIn from './components/SignIn';
+import Edit from './components/Edit';
 import Navbar from './components/Navbar';
+import Error from './components/Error';
 
 // Containers
 import Uploads from './containers/Uploads';
@@ -23,8 +25,10 @@ class App extends Component {
 						<div className="container">
 							<Switch>
 								<Route path="/signin" component={SignIn} exact />
+								<Route path="/edit" component={Edit} exact />
 								<Route path="/uploads" component={Uploads} exact />
-								{/* <Redirect from="/" to="/signin" /> */}
+								<Redirect from="/" to={localStorage.user !== undefined ? '/uploads' : '/signin'} />
+								<Route component={Error} />
 							</Switch>
 						</div>
 					</div>

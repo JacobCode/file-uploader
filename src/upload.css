@@ -1,0 +1,4 @@
+#custom-file-upload::after {
+	background: none !important;
+	content: "Browse" !important;
+}

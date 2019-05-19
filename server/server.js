@@ -22,9 +22,9 @@ app.disable('x-powered-by');
 app.enable("trust proxy");
 
 // Setup rate limit
-var setupLimit = (maxAttempts) => {
+var setupLimit = (maxAttempts, minutes) => {
 	return rateLimit({
-		windowMs: 60000 * 60 * 60,
+		windowMs: 60000 * minutes,
 		max: maxAttempts
 	});
 }
@@ -77,7 +77,7 @@ const storage = new GridFsStorage({
 const upload = multer({ storage });
 
 // Upload files to db
-app.post('/upload', setupLimit(3), upload.single('file'), (req, res) => {
+app.post('/upload', setupLimit(3, 10), upload.single('file'), (req, res) => {
 	if (req.file !== undefined) {
 		gfs.files.find().toArray((err, files) => {
 			// If no files
@@ -117,7 +117,7 @@ app.post('/upload', setupLimit(3), upload.single('file'), (req, res) => {
 								if (error) console.log(error, '🛑');
 							});
 							// Send 'ok' and redirect
-							res.status(200).redirect('https://file-uploader.netlify.com//uploads');
+							res.status(200).redirect('https://file-uploader.netlify.com/uploads');
 						}
 					} else {
 						res.status(201).send('There was a problem');
@@ -137,18 +137,6 @@ app.get('/files/:filename', (req, res) => {
 				res.status(200).send({ error: 'No files found' });
 			}
 			res.status(200).send(file);
-			// if (file !== null) {
-			// 	const readstream = gfs.createReadStream(file.filename);
-			// 	readstream.pipe(res);
-			// 	readstream.on('data', function (chunk) {
-			// 		const str = BJSON.stringify({ buf: Buffer.from(chunk) });
-			// 		res.status(200).send({ data: JSON.parse(str)['buf']['data'].substr(7) })
-			// 	});
-			// 	readstream.on('error', e => {
-			// 		console.log('error');
-			// 	});
-			// 	res.set('Content-Type', file.contentType);
-			// }
 		});
 	}
 });
@@ -162,7 +150,7 @@ app.get('/user/files/:userId', (req, res) => {
 });
 
 // Register
-app.post('/register', setupLimit(3), (req, res) => {
+app.post('/register', setupLimit(3, 30), (req, res) => {
 	if (req.body.email && req.body.username && req.body.password) {
 		const hashPassword = async () => {
 			const salt = await bcrypt.genSalt(10);
@@ -177,7 +165,7 @@ app.post('/register', setupLimit(3), (req, res) => {
 			});
 			newUser.save()
 				.then((user) => {
-					res.status(200).redirect({ message: 'New user registered' })
+					res.status(200).send({ message: 'New user registered' })
 				})
 				.catch((err) => {
 					// If duplicate values for email or username
@@ -193,7 +181,7 @@ app.post('/register', setupLimit(3), (req, res) => {
 });
 
 // Login
-app.post('/login', setupLimit(15), (req, res) => {
+app.post('/login', setupLimit(15, 60), (req, res) => {
 	User.find({ username: req.body.username })
 		.then((results) => {
 			// Compare passwords

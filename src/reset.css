@@ -6,6 +6,9 @@
 input {
 	box-shadow: none !important;
 }
+.text-primary {
+	color: #419dff !important;
+}
 body {
 	background: #0b1222;
 }
@@ -13,4 +16,7 @@ h1, h2 {
 	background: -webkit-linear-gradient(#16bb53, #78ffaa);
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
+}
+.mb-6 {
+	margin-bottom: 4rem;
 }

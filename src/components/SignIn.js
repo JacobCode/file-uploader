@@ -110,9 +110,9 @@ class SignIn extends Component {
 
 				{/* Show Login form if not logged in */}
 				{this.state.showLogin === true && user.username === null ? 
-				<form id="login-form" onSubmit={this.loginSubmit} className="form mb-5">
+				<form id="login-form" onSubmit={this.loginSubmit} className="form">
 					{/* Login Form */}
-					<h1 className="mb-5">Login</h1>
+					<h1 className="mb-6">Login</h1>
 					<div className="input-group mb-5">
 						<div className="input-group-prepend">
 							<span className="input-group-text"><i className="fas fa-user"></i></span>
@@ -120,7 +120,7 @@ class SignIn extends Component {
 						<input onChange={this.handleInput} value={this.state.lusername} type="text" name="lusername" id="lusername" className="form-control" placeholder="Username" aria-label="Username" required />
 					</div>
 
-					<div className="input-group mb-5">
+					<div className="input-group mb-6">
 						<div className="input-group-prepend">
 							<span className="input-group-text"><i className="fas fa-key"></i></span>
 						</div>
@@ -128,7 +128,7 @@ class SignIn extends Component {
 					</div>
 
 					<div className="form-group text-right">
-						<button type="submit" name="lsubmit" className="change-form p-0 btn btn-white btn-md outline text-align-right">Sign In <i className="pl-2 fas fa-arrow-right"></i></button>
+						<button type="submit" name="lsubmit" className="change-form p-0 p-0 btn btn-white text-white"><span>Sign In <i className="pl-2 fas fa-arrow-right"></i></span></button>
 					</div>
 					<div className="text-left">
 						<button className="p-0 btn btn-white text-white" onClick={this.changeForm}>Don't have an account? <span className="text-primary pl-1">Register</span></button>
@@ -140,7 +140,7 @@ class SignIn extends Component {
 				{this.state.showLogin === false && user.username === null ?
 				<form id="signup-form" onSubmit={this.registerSubmit} className="form mb-5">
 					{/* Register Form */}
-					<h1 className="mb-5">Create Account</h1>
+					<h1 className="mb-6">Create Account</h1>
 
 					<div className="input-group mb-5">
 						<div className="input-group-prepend">
@@ -156,7 +156,7 @@ class SignIn extends Component {
 						<input onChange={this.handleInput} value={this.state.rusername} type="text" name="rusername" id="rusername" className="form-control" placeholder="Username" aria-label="Username" required />
 					</div>
 
-					<div className="input-group mb-5">
+					<div className="input-group mb-6">
 						<div className="input-group-prepend">
 							<span className="input-group-text"><i className="fas fa-key"></i></span>
 						</div>
@@ -164,7 +164,7 @@ class SignIn extends Component {
 					</div>
 
 					<div className="form-group text-right">
-						<button style={{color: '#16bb53'}} type="submit" name="rsubmit" className="change-form p-0 btn btn-white btn-md">Sign Up <i className="pl-2 fas fa-arrow-right"></i></button>
+						<button style={{color: '#16bb53'}} type="submit" name="rsubmit" className="change-form p-0 p-0 btn btn-white text-white"><span>Sign Up <i className="pl-2 fas fa-arrow-right"></i></span></button>
 					</div>
 					<div className="text-left">
 						<button className="p-0 btn text-white" onClick={this.changeForm}>Already have an account? <span className="text-primary pl-1">Login</span></button>

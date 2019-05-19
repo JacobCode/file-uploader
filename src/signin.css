@@ -13,13 +13,13 @@
 }
 
 #signup-form {
-
+	
 }
 #signup-form h1 {
 	
 }
 
-.btn.change-form, .change-form i {
+.change-form span, .change-form span i {
 	background: -webkit-linear-gradient(#16bb53, #78ffaa);
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;

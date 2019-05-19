@@ -6,10 +6,23 @@ nav button.navbar-toggler {
 	border: none !important;
 	outline: none !important;
 	box-shadow: none !important;
+	transition: all 0.3s ease-in-out;
 	padding: 0;
+	opacity: 0.8;
+}
+nav button.navbar-toggler:hover {
+	opacity: 1;
+}
+nav img {
+	height: 40px;
+	width: 40px
 }
 nav a.navbar-brand {
-	opacity: 0.5;
+	opacity: 0.6;
+	transition: all 0.3s ease-in-out;
+}
+nav a.navbar-brand:hover {
+	opacity: 1;
 }
 nav .links {
 
