@@ -7,7 +7,7 @@ import '../signin.css';
 
 import { loginUser, signOut } from '../redux/actions/actions';
 
-const API_URL = 'https://file-upload-db.herokuapp.com';
+const API_URL = '';
 
 class SignIn extends Component {
 	constructor() {

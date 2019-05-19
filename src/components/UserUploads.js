@@ -8,7 +8,7 @@ import { loginUser } from '../redux/actions/actions';
 import noFiles from '../media/empty.svg';
 import '../user-uploads.css';
 
-const API_URL = 'https://file-upload-db.herokuapp.com';
+const API_URL = '';
 
 class UserUploads extends Component {
 	constructor() {

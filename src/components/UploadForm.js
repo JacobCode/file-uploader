@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import '../upload.css';
 
 // https://file-upload-db.herokuapp.com
-const API_URL = 'https://file-upload-db.herokuapp.com';
+const API_URL = '';
 
 class UploadForm extends Component {
 	constructor() {
@@ -48,12 +48,12 @@ class UploadForm extends Component {
 			// Hide error after 3 seconds
 			setTimeout(() => { this.setState({ error: null }) }, 3500);
 		}
-		// If file is more than 500kb, prevent form from submit and show error
-		if (newFile > 500) {
+		// If file is more than 3000kb (3mb), prevent form from submit and show error
+		if (newFile > 3000) {
 			e.preventDefault();
 			this.setState({ error: 'File is too big, please choose another'});
 			// Hide error after 3 seconds
-			// setTimeout(() => { this.setState({ error: null }) }, 3500);
+			setTimeout(() => { this.setState({ error: null }) }, 3500);
 		}
 	}
 	render() {
