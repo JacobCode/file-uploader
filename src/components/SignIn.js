@@ -7,7 +7,7 @@ import '../signin.css';
 
 import { loginUser, signOut } from '../redux/actions/actions';
 
-const API_URL = '';
+const API_URL = 'https://file-upload-db.herokuapp.com';
 
 class SignIn extends Component {
 	constructor() {
@@ -174,19 +174,19 @@ class SignIn extends Component {
 
 				{/* Login Success Alert */}
 				{this.state.user.username !== undefined ?
-				<div className="alert alert-success" role="alert">
+				<div style={{maxWidth: '600px', position: 'fixed', bottom: '1.5rem', right: '1.5rem'}} className="alert alert-success" role="alert">
 					{`Welcome, ${this.state.user.username}`}
 				</div> : null}
 				
 				{/* Login Fail Alert */}
 				{this.state.error.length > 0 ? 
-				<div className="alert alert-warning" role="alert">
+				<div style={{maxWidth: '600px', position: 'fixed', bottom: '1.5rem', right: '1.5rem'}} className="alert alert-warning" role="alert">
 					{this.state.error}
 				</div> : null}
 
 				{/* Register Success Alert */}
 				{this.state.message.length > 0 ?
-				<div className="alert alert-success" role="alert">
+				<div style={{maxWidth: '600px', position: 'fixed', bottom: '1.5rem', right: '1.5rem'}} className="alert alert-success" role="alert">
 					{this.state.message}
 				</div> : null}
 

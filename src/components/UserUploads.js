@@ -8,7 +8,7 @@ import { loginUser } from '../redux/actions/actions';
 import noFiles from '../media/empty.svg';
 import '../user-uploads.css';
 
-const API_URL = '';
+const API_URL = 'https://file-upload-db.herokuapp.com';
 
 class UserUploads extends Component {
 	constructor() {
@@ -91,7 +91,7 @@ class UserUploads extends Component {
 	render() {
 		if (this.props.user._id !== null) {
 			return (
-				<div id="user-uploads" className="mb-4">
+				<div id="user-uploads">
 					{this.state.userFiles.length > 0 ?
 					<div className="uploads">
 						{/* Header and storage info */}

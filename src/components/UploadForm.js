@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 
 import '../upload.css';
 
-// https://file-upload-db.herokuapp.com
-const API_URL = '';
+const API_URL = 'https://file-upload-db.herokuapp.com';
 
 class UploadForm extends Component {
 	constructor() {

@@ -1,5 +1,29 @@
-label {
-	background: -webkit-linear-gradient(#16bb53, #78ffaa);
-	-webkit-background-clip: text;
-	-webkit-text-fill-color: transparent;
+#edit .form-group label {
+	color: white;
+	opacity: 0.6;
+}
+
+#edit .form-check label {
+	padding-left: 0.5rem;
+}
+
+#edit .edit-1, #edit .edit-2 {
+	min-width: 50%;
+	padding: 0 3rem;
+}
+
+
+
+@media screen and (max-width: 992px) {
+	#edit {
+		flex-direction: column;
+		align-items: center;
+	}
+	#edit .edit-1 {
+		margin-bottom: 5rem;
+	}
+	#edit .edit-1, #edit .edit-2 {
+		min-width: 100%;
+		padding: 0;
+	}
 }
