@@ -14,7 +14,9 @@ const crypto = require('crypto');
 const BJSON = require('buffer-json');
 
 // Express Middleware
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({
+	extended: true
+}));
 app.use(bodyParser.json());
 app.use(methodOverride('_method'))
 app.use(cors());
@@ -35,13 +37,21 @@ const User = require('./models/user');
 // DB Config
 const db = process.env.MONGODB_URI;
 
-// Connect to mongo
-mongoose.connect(db, {useNewUrlParser: true })
-    .then(() => { console.log('✅ MONGO DB CONNECTED')})
-    .catch(() => { console.log('🛑 MONGO DB ERROR')});
+// Connect to Mongo
+mongoose.connect(db, {
+		useNewUrlParser: true
+	})
+	.then(() => {
+		console.log('✅ MONGO DB CONNECTED')
+	})
+	.catch(() => {
+		console.log('🛑 MONGO DB ERROR')
+	});
 
 // Init gfs
-const conn = mongoose.createConnection(db, { useNewUrlParser: true })
+const conn = mongoose.createConnection(db, {
+	useNewUrlParser: true
+})
 let gfs;
 conn.once('open', () => {
 	gfs = Grid(conn.db, mongoose.mongo);
@@ -63,8 +73,12 @@ const storage = new GridFsStorage({
 				const fileInfo = {
 					fileName: filename,
 					metadata: {
-						uploadedBy: { uploadedBy } = storage.configuration.uploadedBy,
-						customName: { customName } = storage.configuration.customName,
+						uploadedBy: {
+							uploadedBy
+						} = storage.configuration.uploadedBy,
+						customName: {
+							customName
+						} = storage.configuration.customName,
 						name: file.originalname.trim()
 					},
 					bucketName: 'uploads'
@@ -74,7 +88,9 @@ const storage = new GridFsStorage({
 		});
 	}
 });
-const upload = multer({ storage });
+const upload = multer({
+	storage
+});
 
 // Upload files to db
 app.post('/upload', setupLimit(3, 10), upload.single('file'), (req, res) => {
@@ -113,7 +129,9 @@ app.post('/upload', setupLimit(3, 10), upload.single('file'), (req, res) => {
 							// Add new file to users current files
 							const output = [...arr, files.filter((f) => f.metadata.uploadedBy === req.body.id)[0]];
 							// Update and save users files
-							User.findByIdAndUpdate(req.body.id, { files: output }, (error) => {
+							User.findByIdAndUpdate(req.body.id, {
+								files: output
+							}, (error) => {
 								if (error) console.log(error, '🛑');
 							});
 							// Send 'ok' and redirect
@@ -124,19 +142,6 @@ app.post('/upload', setupLimit(3, 10), upload.single('file'), (req, res) => {
 					}
 				}
 			});
-		});
-	}
-});
-
-// Get file path
-app.get('/files/:filename', (req, res) => {
-	if (req.params.filename.length > 0) {
-		gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
-			// If no files
-			if (!file || file.length === 0) {
-				res.status(200).send({ error: 'No files found' });
-			}
-			res.status(200).send(file);
 		});
 	}
 });
@@ -165,7 +170,9 @@ app.post('/register', setupLimit(3, 30), (req, res) => {
 			});
 			newUser.save()
 				.then((user) => {
-					res.status(200).send({ message: 'New user registered' })
+					res.status(200).send({
+						message: 'New user registered'
+					})
 				})
 				.catch((err) => {
 					// If duplicate values for email or username
@@ -182,7 +189,9 @@ app.post('/register', setupLimit(3, 30), (req, res) => {
 
 // Login
 app.post('/login', setupLimit(15, 60), (req, res) => {
-	User.find({ username: req.body.username })
+	User.find({
+			username: req.body.username
+		})
 		.then((results) => {
 			// Compare passwords
 			const comparePasswords = async (text, hash) => {
@@ -201,14 +210,106 @@ app.post('/login', setupLimit(15, 60), (req, res) => {
 		});
 });
 
+// Change Password
+app.post('/user/changepassword', setupLimit(1, 0.05), (req, res) => {
+	User.find({
+			_id: req.body.id
+		})
+		.then((results) => {
+			// Compare passwords
+			const comparePasswords = async (text, hash) => {
+				const isMatch = await bcrypt.compare(text, hash);
+				// If passwords match
+				if (isMatch) {
+					const hashPassword = async () => {
+						const salt = await bcrypt.genSalt(10);
+						const password = await bcrypt.hash(req.body.new, salt);
+						return password;
+					}
+					hashPassword().then((pswd) => {
+						// Update and save users files
+						User.findByIdAndUpdate(req.body.id, {
+							password: pswd
+						}, (error) => {
+							if (error) {
+								console.log(error)
+							} else {
+								res.status(200).send(`New Password: ${req.body.new}`)
+							}
+						});
+					});
+				} else {
+					res.status(404).send('Incorrect Password')
+				}
+			}
+			comparePasswords(req.body.old, results[0].password);
+		})
+		.catch((err) => res.status(404).send('User does not exist'));
+});
+
+// Delete account from 'Users' and all user's files from 'Uploads'
+app.post('/user/delete/', (req, res) => {
+	User.find({
+			_id: req.body.id
+		})
+		.then((results) => {
+			// Compare passwords
+			const comparePasswords = async (text, hash) => {
+				const isMatch = await bcrypt.compare(text, hash);
+				// If passwords match
+				if (isMatch) {
+					const hashPassword = async () => {
+						const salt = await bcrypt.genSalt(10);
+						const password = await bcrypt.hash(req.body.password, salt);
+						return password;
+					}
+					hashPassword().then((pswd) => {
+						// Find account by id and delete
+						User.findByIdAndDelete({
+								_id: req.body.id
+							})
+							// Redirect OK on account delete
+							.then((response) => res.status(200).send('Deleted Account'))
+							.catch((err) => console.log(err));
+					});
+				} else {
+					res.status(404).send('Incorrect Password')
+				}
+			}
+			comparePasswords(req.body.password, results[0].password);
+			return results;
+		})
+		.then((dt) => {
+			// For each user file, delete file from 'Uploads'
+			dt[0].files.forEach((file) => {
+				gfs.remove({
+					_id: file._id,
+					root: 'uploads'
+				}, (err, gridStore) => {
+					if (err) return res.status(404).json({
+						error: err
+					});
+				});
+			});
+		})
+		.catch((err) => res.status(404).send('User already deleted'));
+})
+
 // Delete File
 app.get('/files/delete/:fileId/:userId', (req, res) => {
-	gfs.remove({ _id: req.params.fileId, root: 'uploads' }, (err, gridStore) => {
-		if (err) return res.status(404).json({ error: err });
+	gfs.remove({
+		_id: req.params.fileId,
+		root: 'uploads'
+	}, (err, gridStore) => {
+		if (err) return res.status(404).json({
+			error: err
+		});
 		res.status(200).send(`Deleted ${req.params.fileId}`);
 		User.findById(req.params.userId)
 			.then((data) => {
-				User.findByIdAndUpdate(req.params.userId, { files: data.files.filter((file) => file._id.toString() !== req.params.fileId) }, (error) => {
+				User.findByIdAndUpdate(req.params.userId, {
+					files: data.files.filter((file) => file._id.toString() !== req.params.fileId)
+				}, (error) => {
 					if (error) console.log(error, '🛑');
 				});
 			})
@@ -217,10 +318,14 @@ app.get('/files/delete/:fileId/:userId', (req, res) => {
 
 // Download file by filename
 app.get('/files/download/:filename', (req, res) => {
-	gfs.files.find({ filename: req.params.filename }).toArray(function (err, files) {
+	gfs.files.find({
+		filename: req.params.filename
+	}).toArray(function (err, files) {
 		// If file does not exist
 		if (!files || files.length === 0) {
-			return res.status(404).json({ message: 'error' });
+			return res.status(404).json({
+				message: 'error'
+			});
 		}
 		// create read stream
 		var readstream = gfs.createReadStream({
