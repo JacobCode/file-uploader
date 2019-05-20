@@ -20,7 +20,7 @@ class Navbar extends Component {
 	render() {
 		return (
 			<nav className="navbar navbar-dark justify-content-between" style={{marginBottom: '3.5rem'}}>
-				<a href="/" className="navbar-brand">File Uploader</a>
+				<a href="/" className="navbar-brand">{this.props.user.username !== null ? `Hello, ${this.props.user.username}` : 'File Uploader'}</a>
 				{/* Links on big screens */}
 				<div className="d-flex links">
 					<a className={`text-white nav-link ${window.location.pathname === '/edit' ? 'active' : ''}`} href="/edit">Edit</a>
