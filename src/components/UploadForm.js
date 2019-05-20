@@ -48,7 +48,7 @@ class UploadForm extends Component {
 			setTimeout(() => { this.setState({ error: null }) }, 3500);
 		}
 		// If file is more than 3000kb (3mb), prevent form from submit and show error
-		if (newFile > 3000) {
+		if (newFile > 6000) {
 			e.preventDefault();
 			this.setState({ error: 'File is too big, please choose another'});
 			// Hide error after 3 seconds

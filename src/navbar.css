@@ -20,6 +20,7 @@ nav img {
 nav a.navbar-brand {
 	opacity: 0.6;
 	transition: all 0.3s ease-in-out;
+	text-transform: capitalize;
 }
 nav a.navbar-brand:hover {
 	opacity: 1;

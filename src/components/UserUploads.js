@@ -77,9 +77,9 @@ class UserUploads extends Component {
 			}, 1000);
 		} else {
 			this.setState({ downloadLink: `${API_URL}/files/download/${file.filename}/`, downloadName: file.metadata.customName });
-			setTimeout(() => {
-				this.setState({ downloadLink: '', downloadName: '' })
-			}, 5000);
+			// setTimeout(() => {
+			// 	this.setState({ downloadLink: '', downloadName: '' })
+			// }, 5000);
 		}
 	}
 	componentWillMount() {
@@ -91,7 +91,7 @@ class UserUploads extends Component {
 	render() {
 		if (this.props.user._id !== null) {
 			return (
-				<div id="user-uploads">
+				<div id="user-uploads" className="mb-4">
 					{this.state.userFiles.length > 0 ?
 					<div className="uploads">
 						{/* Header and storage info */}
@@ -131,6 +131,7 @@ class UserUploads extends Component {
 											:
 											file.contentType === 'image/jpeg' ? <i className="fas fa-file-image"></i>
 											: file.contentType === 'audio/mpeg' ? <i className="fas fa-file-audio"></i>
+											: file.contentType === 'application/pdf' ? <i className="fas fa-file-pdf"></i>
 											: <i className="fas fa-file"></i>}
 										</p>
 										<p onClick={e => this.deleteFile(e, file)} className="d-flex align-items-center" style={{width: '5%'}}><i className="far fa-trash-alt text-right" style={{fontSize: '1.25rem'}}></i></p>
@@ -138,21 +139,17 @@ class UserUploads extends Component {
 								)
 							})}
 						</div>
-						{this.state.downloadLink.length > 0 ? <a download={this.state.downloadName} href={this.state.downloadLink} className="btn btn-primary">Download File</a> : null}
+						{this.state.downloadLink.length > 0 ?
+						<div className="d-flex align-items-center mb-5">
+							<a download={this.state.downloadName} href={this.state.downloadLink} className="btn btn-primary">Download File</a>
+							<span className="ml-3 text-white" style={{opacity: 0.6}}>{this.state.downloadName}</span>
+						</div> : null}
 					</div>
 					: null }
 					{this.state.userFiles.length === 0 && this.props.user.username !== null ?
 					<div className="mb-5 d-flex justify-content-center align-items-center">
 						<img src={noFiles} style={{width: '90%', maxWidth: '900px', maxHeight: '450px'}} alt="No Files Found" />
 					</div> : null}
-
-					{/* Load different image types */}
-					{/* {this.state.chosenFile.contentType === 'image/png' ? <img className="d-flex mw-100" src={`data:image/pdf;base64,${this.state.activeImage}`} alt='null' />
-					: 
-					this.state.chosenFile.contentType === 'image/svg+xml' ? <img className="d-flex mw-100" src={`data:image/svg+xml;base64,${this.state.activeImage}`} alt='null' />
-					:
-					this.state.chosenFile.contentType === 'image/jpeg' ? <img className="d-flex mw-100" src={`data:image/jpeg;base64,${this.state.activeImage}`} alt='null' />
-					: null} */}
 				</div>
 			)
 		} else {

@@ -30,6 +30,9 @@ class SignIn extends Component {
 		this.changeForm = this.changeForm.bind(this);
 		this.logout = this.logout.bind(this);
 	}
+	deleteSpaces(str) {
+		return str.replace(/ /g, '');
+	}
 	handleInput(e) {
 		this.setState({ [e.target.id]: e.target.value });
 	}
@@ -63,9 +66,9 @@ class SignIn extends Component {
 	registerSubmit(e) {
 		e.preventDefault();
 		const newUser = {
-			email: this.state.remail.toLowerCase(),
-			username: this.state.rusername.toLowerCase(),
-			password: this.state.rpassword
+			email: this.deleteSpaces(this.state.remail.toLowerCase()),
+			username: this.deleteSpaces(this.state.rusername.toLowerCase()),
+			password: this.deleteSpaces(this.state.rpassword)
 		}
 		axios.post(`${API_URL}/register`, newUser).then((res) => {
 			console.log(res.status)
