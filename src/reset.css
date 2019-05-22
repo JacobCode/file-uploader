@@ -20,3 +20,7 @@ h1, h2 {
 .mb-6 {
 	margin-bottom: 4rem;
 }
+
+.App {
+	min-height: 100vh;
+}

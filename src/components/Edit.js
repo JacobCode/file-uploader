@@ -84,11 +84,10 @@ class Edit extends Component {
 	render() {
 		if (localStorage.user !== undefined) {
 			return (
-				<div id="edit" className="d-flex justify-content-center">
-
+				<div id="edit" className="d-flex justify-content-center" style={{minWidth: '100%'}}>
 					{/* Update Password */}
 					<div className="edit-1">
-						<h1 className="mb-5">Change Password</h1>
+						<h1 className="mb-6">Change Password</h1>
 						<form onSubmit={this.handlePasswordChange}>
 							<div className="form-group col p-0 mb-4">
 								<label htmlFor="inputPassword" className="mb-3">Current Password</label>
@@ -102,13 +101,13 @@ class Edit extends Component {
 								<label htmlFor="confirmPassword" className="mb-3">Confirm New Password</label>
 								<input onChange={this.handleConfirm} value={this.state.confirmPassword} type="text" className="form-control" id="confirmPassword" placeholder="Password" required />
 							</div>
-							<button type="submit" className="btn btn-primary">Update Password</button>
+							<button type="submit" className="btn btn-primary">Update Password <i className="fas fa-unlock-alt pl-2"></i></button>
 						</form>
 					</div>
 
 					{/* Delete Account */}
 					<div className="edit-2 mb-5">
-						<h1 className="mb-5">Delete Account</h1>
+						<h1 className="mb-6">Delete Account</h1>
 						<form onSubmit={this.deleteAccount}>
 							<div className="form-group col p-0 mb-4">
 								<label htmlFor="deletePassword" className="mb-3">Password</label>
@@ -118,7 +117,7 @@ class Edit extends Component {
 								<input checked={this.state.deleteAccount} onChange={this.handleCheckbox} type="checkbox" className="form-check-input" id="checkbox" required />
 								<label className="form-check-label text-primary" htmlFor="checkbox">Are you sure you want to delete your account and files?</label>
 							</div>
-							<button type="submit" className="btn btn-danger">Delete account and files</button>
+							<button type="submit" className="btn btn-danger">Delete account and files <i className="fas fa-exclamation-circle pl-2"></i></button>
 						</form>
 					</div>
 

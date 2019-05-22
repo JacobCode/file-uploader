@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import axios from 'axios';
 
-import { loginUser } from '../redux/actions/actions';
+import { deleteFile } from '../redux/actions/actions'
 
 import noFiles from '../media/empty.svg';
 import '../user-uploads.css';
@@ -23,29 +22,30 @@ class UserUploads extends Component {
 			storagePercent: '',
 			downloadName: ''
 		}
-		this.getUserFiles = this.getUserFiles.bind(this);
-		this.showFile = this.showFile.bind(this);
+		this.updateStorage = this.updateStorage.bind(this);
+		this.deleteFile = this.deleteFile.bind(this);
+		this.downloadFile = this.downloadFile.bind(this);
 	}
-	getUserFiles() {
-		axios.get(`${API_URL}/user/files/${this.props.user._id}`)
-			.then((res) => {
-				this.setState({ userFiles: res.data });
-				const numbers = [];
-				if (res.data.length >= 1) {
-					res.data.forEach(file => {
-						numbers.push(file.length)
-					});
-					const getSum = (total, num) => {
-						return total + num;
-					}
-					this.setState({
-						storage: this.convertBytes(numbers.reduce(getSum), 2),
-						storagePercent: (((numbers.reduce(getSum) / 1024) / 10000) * 100).toFixed(3)
-					});
-				}
-			})
-			.catch((err) => console.log('Error getting files, please try again later'));
-	}
+	// getUserFiles() {
+	// 	axios.get(`${API_URL}/user/files/${this.props.user._id}`)
+	// 		.then((res) => {
+	// 			this.setState({ userFiles: res.data });
+	// 			const numbers = [];
+	// 			if (res.data.length >= 1) {
+	// 				res.data.forEach(file => {
+	// 					numbers.push(file.length)
+	// 				});
+	// 				const getSum = (total, num) => {
+	// 					return total + num;
+	// 				}
+	// 				this.setState({
+	// 					storage: this.convertBytes(numbers.reduce(getSum), 2),
+	// 					storagePercent: (((numbers.reduce(getSum) / 1024) / 10000) * 100).toFixed(3)
+	// 				});
+	// 			}
+	// 		})
+	// 		.catch((err) => console.log('Error getting files, please try again later'));
+	// }
 	// Convert bytes
 	convertBytes(bytes, num) {
 		var i = Math.floor(Math.log(bytes) / Math.log(1024)),
@@ -53,19 +53,10 @@ class UserUploads extends Component {
 
 		return (bytes / Math.pow(1024, i)).toFixed(num) * 1 + '' + sizes[i];
 	}
-	// Show image/file info
-	showFile(e, file) {
-		if (file._id) {
-			// Get file by ID and display image
-		}
-	}
 	// Delete file by id
 	deleteFile(e, file) {
 		if (file._id) {
-			axios.get(`${API_URL}/files/delete/${file._id}/${this.props.user._id}`)
-				.then((res) => {
-					this.setState({ userFiles: this.state.userFiles.filter((f) => f._id !== file._id) })
-				});
+			this.props.deleteFile(file._id, this.props.user._id, this.props.userFiles);
 		}
 	}
 	// Download file by filename
@@ -82,17 +73,31 @@ class UserUploads extends Component {
 			// }, 5000);
 		}
 	}
-	componentWillMount() {
-		// If logged in, get users files
-		if (this.props.user._id !== null) {
-			this.getUserFiles();
+	updateStorage(totalFiles) {
+		if (totalFiles.length >= 1) {
+			const numbers = [];
+			totalFiles.forEach(file => {
+				numbers.push(file.length)
+			});
+			const getSum = (total, num) => {
+				return total + num;
+			}
+			this.setState({
+				storage: this.convertBytes(numbers.reduce(getSum), 2),
+				storagePercent: (((numbers.reduce(getSum) / 1024) / 10000) * 100).toFixed(3)
+			});
+		}
+	}
+	componentWillReceiveProps(nextProps) {
+		if (nextProps.totalFiles.length >= 1) {
+			this.updateStorage(nextProps.totalFiles);
 		}
 	}
 	render() {
 		if (this.props.user._id !== null) {
 			return (
-				<div id="user-uploads" className="mb-4">
-					{this.state.userFiles.length > 0 ?
+				<div id="user-uploads" className="mb-6">
+					{this.props.userFiles.length > 0 ?
 					<div className="uploads">
 						{/* Header and storage info */}
 						<header className="mb-5 d-flex justify-content-between align-items-center">
@@ -101,7 +106,7 @@ class UserUploads extends Component {
 								<div className="mb-2" style={{color: '#e6e6e6'}}>
 									{this.state.storage} / 10 MB
 								</div>
-								<div className="progress" style={{height:'8px'}}>
+								<div className="progress" style={{minWidth: '100px', height:'8px'}}>
 									<div className="progress-bar bg-primary" style={{width:`${this.state.storagePercent}%`}}></div>
 								</div>
 							</div>
@@ -115,7 +120,7 @@ class UserUploads extends Component {
 						</div>
 						{/* User's files */}
 						<div className="files d-flex flex-column">
-							{this.state.userFiles.map((file) => {
+							{this.props.userFiles.map((file) => {
 								return (
 									<div className="file w-100 d-flex justify-content-between mb-4" key={file._id}>
 										<p onClick={e => this.downloadFile(e, file)} style={{width: '55%'}} className="show-file">
@@ -146,7 +151,7 @@ class UserUploads extends Component {
 						</div> : null}
 					</div>
 					: null }
-					{this.state.userFiles.length === 0 && this.props.user.username !== null ?
+					{this.props.userFiles.length === 0 && this.props.user.username !== null ?
 					<div className="mb-5 d-flex justify-content-center align-items-center">
 						<img src={noFiles} style={{width: '90%', maxWidth: '900px', maxHeight: '450px'}} alt="No Files Found" />
 					</div> : null}
@@ -162,11 +167,13 @@ class UserUploads extends Component {
 
 UserUploads.propTypes = {
 	user: PropTypes.object.isRequired,
-	loginUser: PropTypes.func.isRequired
+	userFiles: PropTypes.array.isRequired,
+	deleteFile: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-    user: state.siteData.user,
+	user: state.siteData.user,
+	userFiles: state.siteData.userFiles
 });
 
-export default connect(mapStateToProps, { loginUser })(UserUploads);
+export default connect(mapStateToProps, { deleteFile })(UserUploads);

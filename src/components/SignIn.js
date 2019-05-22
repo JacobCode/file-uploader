@@ -115,7 +115,7 @@ class SignIn extends Component {
 				{this.state.showLogin === true && user.username === null ? 
 				<form id="login-form" onSubmit={this.loginSubmit} className="form">
 					{/* Login Form */}
-					<h1 className="mb-6">Login</h1>
+					<h1 style={{marginBottom: '5rem'}}>Login</h1>
 					<div className="input-group mb-5">
 						<div className="input-group-prepend">
 							<span className="input-group-text"><i className="fas fa-user"></i></span>
@@ -143,7 +143,7 @@ class SignIn extends Component {
 				{this.state.showLogin === false && user.username === null ?
 				<form id="signup-form" onSubmit={this.registerSubmit} className="form mb-5">
 					{/* Register Form */}
-					<h1 className="mb-6">Create Account</h1>
+					<h1 style={{marginBottom: '5rem'}}>Create Account</h1>
 
 					<div className="input-group mb-5">
 						<div className="input-group-prepend">
