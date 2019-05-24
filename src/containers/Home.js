@@ -13,7 +13,7 @@ export default class Home extends Component {
 				{/* Welcome */}
 				<div id="welcome" className="mb-6 container">
 					<div className="text">
-						<h3>Welcome To File Uploader</h3>
+						<h1>Welcome To File Uploader</h1>
 						<p>Sed cursus ac nulla in scelerisque. Donec porta, ante id vulputate pretium, urna ipsum vulputate nunc, 
 						non bibendum nulla ipsum quis felis</p>
 						<a href="/signin" className="btn btn-primary text-white">Start Now</a>
