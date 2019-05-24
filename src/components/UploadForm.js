@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import '../upload.css';
+import '../css/upload.css';
 
 const API_URL = 'https://file-upload-db.herokuapp.com';
 
@@ -59,7 +59,7 @@ class UploadForm extends Component {
 		if (localStorage.user !== undefined) {
 			const user = JSON.parse(localStorage.user);
 			return (
-				<div id="upload-form">
+				<div id="upload-form" className="container">
 					{user.id !== null && user.email !== null && user.username !== null ?
 					<div>
 						<h2 style={{maxWidth: '600px', margin: '0 auto'}} className="mb-5 text-white">Add A File</h2>
@@ -90,7 +90,7 @@ class UploadForm extends Component {
 			)
 		} else {
 			return (
-				<p style={{marginTop: '-2rem'}} className="text-white">Please <a href="/signin">sign in</a> to view your uploads</p>
+				<p style={{marginTop: '-2rem', marginLeft: '1rem'}} className="text-white">Please <a href="/signin">sign in</a> to view your uploads</p>
 			)
 		}
 	}

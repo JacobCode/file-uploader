@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { deleteFile } from '../redux/actions/actions'
 
 import noFiles from '../media/empty.svg';
-import '../user-uploads.css';
+import '../css/user-uploads.css';
 
 const API_URL = 'https://file-upload-db.herokuapp.com';
 
@@ -26,26 +26,6 @@ class UserUploads extends Component {
 		this.deleteFile = this.deleteFile.bind(this);
 		this.downloadFile = this.downloadFile.bind(this);
 	}
-	// getUserFiles() {
-	// 	axios.get(`${API_URL}/user/files/${this.props.user._id}`)
-	// 		.then((res) => {
-	// 			this.setState({ userFiles: res.data });
-	// 			const numbers = [];
-	// 			if (res.data.length >= 1) {
-	// 				res.data.forEach(file => {
-	// 					numbers.push(file.length)
-	// 				});
-	// 				const getSum = (total, num) => {
-	// 					return total + num;
-	// 				}
-	// 				this.setState({
-	// 					storage: this.convertBytes(numbers.reduce(getSum), 2),
-	// 					storagePercent: (((numbers.reduce(getSum) / 1024) / 10000) * 100).toFixed(3)
-	// 				});
-	// 			}
-	// 		})
-	// 		.catch((err) => console.log('Error getting files, please try again later'));
-	// }
 	// Convert bytes
 	convertBytes(bytes, num) {
 		var i = Math.floor(Math.log(bytes) / Math.log(1024)),
@@ -68,9 +48,6 @@ class UserUploads extends Component {
 			}, 1000);
 		} else {
 			this.setState({ downloadLink: `${API_URL}/files/download/${file.filename}/`, downloadName: file.metadata.customName });
-			// setTimeout(() => {
-			// 	this.setState({ downloadLink: '', downloadName: '' })
-			// }, 5000);
 		}
 	}
 	updateStorage(totalFiles) {
@@ -96,7 +73,7 @@ class UserUploads extends Component {
 	render() {
 		if (this.props.user._id !== null) {
 			return (
-				<div id="user-uploads" className="mb-6">
+				<div id="user-uploads" className="mb-6 mt-6 container">
 					{this.props.userFiles.length > 0 ?
 					<div className="uploads">
 						{/* Header and storage info */}

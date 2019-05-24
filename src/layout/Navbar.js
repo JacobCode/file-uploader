@@ -6,7 +6,7 @@ import { signOut } from '../redux/actions/actions';
 
 import menuToggler from '../media/menuToggler.svg';
 
-import '../navbar.css';
+import '../css/navbar.css';
 
 class Navbar extends Component {
 	constructor() {
@@ -19,7 +19,7 @@ class Navbar extends Component {
 	}
 	render() {
 		return (
-			<nav className="navbar navbar-dark justify-content-between mb-6">
+			<nav className="navbar navbar-dark justify-content-between">
 				<a href="/" className="navbar-brand">{this.props.user.username !== null ? `Hello, ${this.props.user.username}` : 'File Uploader'}</a>
 				{/* Links on big screens */}
 				<div className="d-flex links">

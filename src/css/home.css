@@ -1,3 +1,27 @@
+#welcome {
+	min-width: 100vw;
+	min-height: 90vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+#welcome h3 {
+	color: white;
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+#welcome p {
+	color: white;
+	opacity: 0.5;
+	margin-bottom: 3rem;
+	width: 65%;
+	min-width: 300px
+}
+
+
 .plan hr {
 	background: rgba(180, 166, 255, 0.2);
 }
@@ -15,7 +39,7 @@
 }
 /* Pricing Start */
 #home #pricing {
-
+	height: 100vh;
 }
 #home #pricing header h1 {
 	margin-bottom: 1.5rem;
@@ -73,7 +97,10 @@
 
 /* Storage Start */
 #home #storage {
-
+	height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 #home #storage p {
 	color: white;
@@ -110,6 +137,7 @@
 	/* Storage Start */
 	#home #storage {
 		flex-direction: column;
+		margin-bottom: 20%;
 	}
 	#home #storage .d-flex {
 		width: 100%;
@@ -119,7 +147,14 @@
 		width: 80%;
 	}
 	#home #storage .d-flex:first-of-type {
+		margin: 0;
 		margin-bottom: 3rem;
 	}
 	/* Storage End */
+	#home #pricing .plans .plan.plan-1 {
+		margin-bottom: 3rem;
+	}
+	#home #pricing .plans .plan.plan-2 {
+		margin-bottom: 5rem;
+	}
 }

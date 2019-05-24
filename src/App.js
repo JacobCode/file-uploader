@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import store from './redux/store';
 
 // Reset default css on browsers
-import './reset.css';
+import './css/reset.css';
 
 // Layout
 import Navbar from './layout/Navbar';
@@ -25,15 +25,13 @@ class App extends Component {
 				<BrowserRouter>
 					<div className="App">
 						<Navbar />
-						<div className="container">
-							<Switch>
-								<Route path="/" component={Home} exact />
-								<Route path="/signin" component={SignIn} exact />
-								<Route path="/edit" component={Edit} exact />
-								<Route path="/uploads" component={Uploads} exact />
-								<Route component={Error} />
-							</Switch>
-						</div>
+						<Switch>
+							<Route path="/" component={Home} exact />
+							<Route path="/signin" component={SignIn} exact />
+							<Route path="/edit" component={Edit} exact />
+							<Route path="/uploads" component={Uploads} exact />
+							<Route component={Error} />
+						</Switch>
 					</div>
 				</BrowserRouter>
 			</Provider>

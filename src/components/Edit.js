@@ -3,7 +3,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import '../edit.css';
+import '../css/edit.css';
 
 import { signOut } from '../redux/actions/actions';
 
@@ -84,7 +84,7 @@ class Edit extends Component {
 	render() {
 		if (localStorage.user !== undefined) {
 			return (
-				<div id="edit" className="d-flex justify-content-center" style={{minWidth: '100%'}}>
+				<div id="edit" className="d-flex justify-content-center container mt-6" style={{minWidth: '100%'}}>
 					{/* Update Password */}
 					<div className="edit-1">
 						<h1 className="mb-6">Change Password</h1>
@@ -137,7 +137,7 @@ class Edit extends Component {
 			)
 		} else {
 			return (
-				<p style={{marginTop: '-2rem'}} className="text-white">Please <a href="/signin">sign in</a> to edit your account</p>
+				<p style={{marginTop: '2rem', marginLeft: '1rem'}} className="text-white">Please <a href="/signin">sign in</a> to edit your account</p>
 			)
 		}
 	}

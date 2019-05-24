@@ -3,7 +3,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import '../signin.css';
+import '../css/signin.css';
 
 import { loginUser, signOut } from '../redux/actions/actions';
 
@@ -113,7 +113,7 @@ class SignIn extends Component {
 	render() {
 		const { user } = this.props;
 		return (
-			<div style={{maxWidth: '600px', margin: '0 auto'}} id="signin">
+			<div className="container" style={{maxWidth: '600px', margin: '4rem auto 0'}} id="signin">
 
 				{/* Show Login form if not logged in */}
 				{this.state.showLogin === true && user.username === null ? 
