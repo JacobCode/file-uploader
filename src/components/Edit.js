@@ -101,7 +101,7 @@ class Edit extends Component {
 								<label htmlFor="confirmPassword" className="mb-3">Confirm New Password</label>
 								<input onChange={this.handleConfirm} value={this.state.confirmPassword} type="text" className="form-control" id="confirmPassword" placeholder="Password" required />
 							</div>
-							<button type="submit" className="btn btn-primary">Update Password <i className="fas fa-unlock-alt pl-2"></i></button>
+							<button disabled={this.props.user._id === '5ce2e24c537781000464381e' ? true : false} type="submit" className="btn btn-primary">Update Password <i className="fas fa-unlock-alt pl-2"></i></button>
 						</form>
 					</div>
 
@@ -117,7 +117,7 @@ class Edit extends Component {
 								<input checked={this.state.deleteAccount} onChange={this.handleCheckbox} type="checkbox" className="form-check-input" id="checkbox" required />
 								<label className="form-check-label text-primary" htmlFor="checkbox">Are you sure you want to delete your account and files?</label>
 							</div>
-							<button type="submit" className="btn btn-danger">Delete account and files <i className="fas fa-exclamation-circle pl-2"></i></button>
+							<button disabled={this.props.user._id === '5ce2e24c537781000464381e' ? true : false} type="submit" className="btn btn-danger">Delete account and files <i className="fas fa-exclamation-circle pl-2"></i></button>
 						</form>
 					</div>
 

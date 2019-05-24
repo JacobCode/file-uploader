@@ -6,6 +6,10 @@
 	border-color: #0084ff;
 }
 
+.pointer {
+	cursor: pointer;
+}
+
 #login-form {
 	
 }
@@ -17,6 +21,11 @@
 }
 #signup-form h1 {
 	
+}
+
+.demo-account {
+	color: white;
+	opacity: 0.5;
 }
 
 .change-form span, .change-form span i {

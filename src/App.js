@@ -6,13 +6,16 @@ import store from './redux/store';
 // Reset default css on browsers
 import './reset.css';
 
+// Layout
+import Navbar from './layout/Navbar';
+
 // Components
 import SignIn from './components/SignIn';
 import Edit from './components/Edit';
-import Navbar from './components/Navbar';
 import Error from './components/Error';
 
 // Containers
+import Home from './containers/Home';
 import Uploads from './containers/Uploads';
 
 class App extends Component {
@@ -24,10 +27,10 @@ class App extends Component {
 						<Navbar />
 						<div className="container">
 							<Switch>
+								<Route path="/" component={Home} exact />
 								<Route path="/signin" component={SignIn} exact />
 								<Route path="/edit" component={Edit} exact />
 								<Route path="/uploads" component={Uploads} exact />
-								<Redirect from="/" to={localStorage.user !== undefined ? '/uploads' : '/signin'} />
 								<Route component={Error} />
 							</Switch>
 						</div>

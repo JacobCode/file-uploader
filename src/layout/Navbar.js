@@ -23,6 +23,7 @@ class Navbar extends Component {
 				<a href="/" className="navbar-brand">{this.props.user.username !== null ? `Hello, ${this.props.user.username}` : 'File Uploader'}</a>
 				{/* Links on big screens */}
 				<div className="d-flex links">
+					<a className={`text-white nav-link ${window.location.pathname === '/' ? 'active' : ''}`} href="/">Home</a>
 					<a className={`text-white nav-link ${window.location.pathname === '/edit' ? 'active' : ''}`} href="/edit">Edit</a>
 					<a className={`text-white nav-link ${window.location.pathname === '/uploads' ? 'active' : ''}`} href="/uploads">Uploads</a>
 					{this.props.user.username === null ? 
@@ -37,18 +38,21 @@ class Navbar extends Component {
 				</button>
 				<div className="collapse navbar-collapse" id="navbarToggleExternalContent">
 					<ul className="navbar-nav mr-auto">
-					<li className={`nav-item ${window.location.pathname === '/edit' ? 'active' : ''}`}>
-						<a className="nav-link" href="/edit">Edit</a>
-					</li>
-					<li className={`nav-item ${window.location.pathname === '/uploads' ? 'active' : ''}`}>
-						<a className="nav-link" href="/uploads">Uploads</a>
-					</li>
-					<li className={`nav-item ${window.location.pathname === '/signin' ? 'active' : ''}`}>
-						{this.props.user.username === null ? 
-						<a className="nav-link" href="/signin">Sign In</a>
-						:
-						<a className="nav-link" href="/signin" onClick={this.logout}>Logout</a>}
-					</li>
+						<li className={`nav-item ${window.location.pathname === '/' ? 'active' : ''}`}>
+							<a className="nav-link" href="/">Home</a>
+						</li>
+						<li className={`nav-item ${window.location.pathname === '/edit' ? 'active' : ''}`}>
+							<a className="nav-link" href="/edit">Edit</a>
+						</li>
+						<li className={`nav-item ${window.location.pathname === '/uploads' ? 'active' : ''}`}>
+							<a className="nav-link" href="/uploads">Uploads</a>
+						</li>
+						<li className={`nav-item ${window.location.pathname === '/signin' ? 'active' : ''}`}>
+							{this.props.user.username === null ? 
+							<a className="nav-link" href="/signin">Sign In</a>
+							:
+							<a className="nav-link" href="/signin" onClick={this.logout}>Logout</a>}
+						</li>
 					</ul>
 				</div>
 			</nav>
