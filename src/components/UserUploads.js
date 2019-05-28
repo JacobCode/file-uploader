@@ -74,27 +74,21 @@ class UserUploads extends Component {
 		if (this.props.user._id !== null) {
 			return (
 				<div id="user-uploads" className="mb-6 mt-6 container">
+					{this.props.userFiles.length > 0 ? 
+					<header className="mb-5 d-flex justify-content-between align-items-center">
+						<h2>Your Files</h2>
+						<div className="d-flex flex-column">
+							<div className="mb-2" style={{color: '#e6e6e6'}}>
+								{this.props.userFiles.length > 0 ? this.state.storage : '0'} / 10 MB
+							</div>
+							<div className="progress" style={{minWidth: '100px', height:'8px'}}>
+								<div className="progress-bar bg-primary" style={{width:`${this.state.storagePercent}%`}}></div>
+							</div>
+						</div>
+					</header>
+					: null}
 					{this.props.userFiles.length > 0 ?
 					<div className="uploads">
-						{/* Header and storage info */}
-						<header className="mb-5 d-flex justify-content-between align-items-center">
-							<h2>Your Files</h2>
-							<div className="d-flex flex-column">
-								<div className="mb-2" style={{color: '#e6e6e6'}}>
-									{this.state.storage} / 10 MB
-								</div>
-								<div className="progress" style={{minWidth: '100px', height:'8px'}}>
-									<div className="progress-bar bg-primary" style={{width:`${this.state.storagePercent}%`}}></div>
-								</div>
-							</div>
-						</header>
-						{/* File info titles */}
-						<div className="titles w-100 d-flex justify-content-between mb-3 text-muted">
-							<p style={{width: '55%'}} className="text-left">Name:</p>
-							<p style={{width: '20%'}} className="text-left">Size:</p>
-							<p style={{width: '20%'}} className="text-left pl-3">Type:</p>
-							<p style={{width: '5%'}}></p>
-						</div>
 						{/* User's files */}
 						<div className="files d-flex flex-column">
 							{this.props.userFiles.map((file) => {

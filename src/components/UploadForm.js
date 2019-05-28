@@ -100,8 +100,8 @@ class UploadForm extends Component {
 				<div id="upload-form" className="container">
 					{user.id !== null && user.email !== null && user.username !== null ?
 					<div>
-						<h2 style={{maxWidth: '600px', margin: '0 auto'}} className="mb-5 text-white">Add A File</h2>
-						<form style={{maxWidth: '600px', margin: '0 auto'}} onSubmit={this.handleSubmit} method="POST" encType="multipart/form-data">
+						<h2 className="mb-5 text-white">Add A File</h2>
+						<form onSubmit={this.handleSubmit} method="POST" encType="multipart/form-data">
 							<div className="mb-5 custom-file">
 								{/* Only accept images */}
 								<div className="form-group">
@@ -114,8 +114,10 @@ class UploadForm extends Component {
 							</div>
 							{/* Upload progress bar */}
 							{this.state.uploading === true ? 
-							<div id="upload-progress" className="progress" style={{minWidth: '100px', height:'8px'}}>
-								<div className={`progress-bar ${this.state.error === null ? 'bg-success' : 'bg-danger'}`} style={{width:`${this.state.progress}%`}}></div>
+							<div id="upload-progress" className="progress">
+								<div className={`progress-bar ${this.state.error === null ? '' : 'bg-danger'}`} style={{width:`${this.state.progress}%`}}>
+									<p>{this.state.progress}%</p>
+								</div>
 							</div>
 							:
 							null}

@@ -2,9 +2,19 @@
 	background: none !important;
 	content: "Browse" !important;
 }
+#upload-progress p {
+	margin: 0;
+}
 #upload-progress {
 	margin-bottom: 2.5rem;
+	border-radius: 2rem;
 }
 #upload-progress .progress-bar {
-	
+	background: #16bb53;
+	background: -moz-linear-gradient(left, #16bb53 0%, #78ffaa 100%);
+	background: -webkit-gradient(left top, right top, color-stop(0%, #16bb53), color-stop(100%, #78ffaa));
+	background: -webkit-linear-gradient(left, #16bb53 0%, #78ffaa 100%);
+	background: -o-linear-gradient(left, #16bb53 0%, #78ffaa 100%);
+	background: -ms-linear-gradient(left, #16bb53 0%, #78ffaa 100%);
+	background: linear-gradient(to right, #16bb53 0%, #78ffaa 100%);
 }
