@@ -5,7 +5,7 @@ import axios from 'axios';
 
 import '../css/upload.css';
 
-const API_URL = 'http://localhost:3001';
+const API_URL = 'https://file-upload-db.herokuapp.com';
 
 class UploadForm extends Component {
 	constructor() {
@@ -101,7 +101,7 @@ class UploadForm extends Component {
 					{user.id !== null && user.email !== null && user.username !== null ?
 					<div>
 						<h2 style={{maxWidth: '600px', margin: '0 auto'}} className="mb-5 text-white">Add A File</h2>
-						<form style={{maxWidth: '600px', margin: '0 auto'}} onSubmit={this.handleSubmit} action={`${API_URL}/upload`} method="POST" encType="multipart/form-data">
+						<form style={{maxWidth: '600px', margin: '0 auto'}} onSubmit={this.handleSubmit} method="POST" encType="multipart/form-data">
 							<div className="mb-5 custom-file">
 								{/* Only accept images */}
 								<div className="form-group">
