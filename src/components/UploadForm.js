@@ -1,22 +1,27 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import axios from 'axios';
 
 import '../css/upload.css';
 
-const API_URL = 'https://file-upload-db.herokuapp.com';
+const API_URL = 'http://localhost:3001';
 
 class UploadForm extends Component {
 	constructor() {
 		super();
 		this.state = {
 			chosenFile: null,
+			chosenName: '',
 			fileName: 'Choose File...',
 			storage: 0,
-			error: null
+			error: null,
+			progress: 0,
+			uploading: false
 		}
 		this.handleFile = this.handleFile.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleName = this.handleName.bind(this);
 	}
 	handleFile(e) {
 		if (this.props.user.username === null) {
@@ -24,6 +29,9 @@ class UploadForm extends Component {
 		}
 		const file = e.target.files[0];
 		this.setState({ chosenFile: file, fileName: file.name });
+	}
+	handleName(e) {
+		this.setState({ chosenName: e.target.value });
 	}
 	componentWillMount() {
 		const numbers = [];
@@ -38,22 +46,52 @@ class UploadForm extends Component {
 		}
 	}
 	handleSubmit(e) {
+		e.preventDefault();
+		this.setState({ uploading: true });
 		// If storage is more than 10MB (10000KB), prevent form submit and show error
 		const storage = this.state.storage / 1024;
 		const newFile = this.state.chosenFile.size / 1024;
+		// If storage with new file is more than 10MB limit
 		if (storage + newFile > 10000) {
-			e.preventDefault();
 			this.setState({ error: 'No room in your storage, make room by deleting files' });
 			// Hide error after 3 seconds
 			setTimeout(() => { this.setState({ error: null }) }, 3500);
 		}
 		// If file is more than 3000kb (3mb), prevent form from submit and show error
 		if (newFile > 6000) {
-			e.preventDefault();
 			this.setState({ error: 'File is too big, please choose another'});
 			// Hide error after 3 seconds
 			setTimeout(() => { this.setState({ error: null }) }, 3500);
 		}
+
+		let data = new FormData();
+		data.append('file', this.state.chosenFile, this.state.chosenName);
+		data.append('id', this.props.user._id);
+		data.append('name', this.state.chosenName);
+
+        const config = {
+			headers: { 'content-type': 'multipart/form-data' },
+			onUploadProgress: (progressEvent) => {
+				var percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+				this.setState({ progress: percentCompleted });
+			}
+        }
+		axios.post(`${API_URL}/upload`, data, config)
+			.then((res) => {
+					if (res.status === 200) {
+						window.location.pathname = '/uploads';
+					}
+				})
+			.catch((err) => {
+				if (err.response) {
+					if (err.response.status === 429) {
+						this.setState({ error: err.response.data });
+						setTimeout(() => {
+							this.setState({ error: null, uploading: false, progress: 0 });
+						}, 3500)
+					}
+				}
+			})
 	}
 	render() {
 		if (localStorage.user !== undefined) {
@@ -72,10 +110,15 @@ class UploadForm extends Component {
 								</div>
 							</div>
 							<div className="form-group mb-5">
-								<input style={{fontSize: '1.2rem'}} className="form-control text-muted" placeholder="File Name" name="name" type="text" required />
+								<input onChange={this.handleName} style={{fontSize: '1.2rem'}} className="form-control text-muted" placeholder="File Name" name="name" type="text" required />
 							</div>
-							{/* Uploaded by user */}
-							<input name="id" type="hidden" value={user._id} />
+							{/* Upload progress bar */}
+							{this.state.uploading === true ? 
+							<div id="upload-progress" className="progress" style={{minWidth: '100px', height:'8px'}}>
+								<div className={`progress-bar ${this.state.error === null ? 'bg-success' : 'bg-danger'}`} style={{width:`${this.state.progress}%`}}></div>
+							</div>
+							:
+							null}
 							<div className="form-group">
 								<button style={{borderRadius: '50%', height: '65px', width: '65px'}} className="bg-primary d-flex align-items-center justify-content-center btn text-white mb-5" type="submit"><i style={{fontSize: '1.2rem'}} className="fas fa-plus"></i></button>
 							</div>

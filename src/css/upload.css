@@ -2,3 +2,9 @@
 	background: none !important;
 	content: "Browse" !important;
 }
+#upload-progress {
+	margin-bottom: 2.5rem;
+}
+#upload-progress .progress-bar {
+	
+}

@@ -101,7 +101,7 @@ class UserUploads extends Component {
 								return (
 									<div className="file w-100 d-flex justify-content-between mb-4" key={file._id}>
 										<p onClick={e => this.downloadFile(e, file)} style={{width: '55%'}} className="show-file">
-											<button type="button" className="btn btn-white p-0 text-primary d-flex align-items-center text-left" data-toggle="modal" data-target="#exampleModal">{file.metadata.customName}</button>
+											<button type="button" className="btn btn-white p-0 text-primary d-flex align-items-center text-left" data-toggle="modal" data-target="#exampleModal">{file.metadata.name}</button>
 										</p>
 										<p style={{width: '20%'}} className="file-size d-flex align-items-center text-left">{this.convertBytes(file.length, 1)}</p>
 										{/* Show different file icons depending on the file contentType */}

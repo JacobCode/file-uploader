@@ -38,7 +38,7 @@ class SignIn extends Component {
 		this.setState({ [e.target.id]: e.target.value });
 	}
 	loginSubmit(e) {
-		e.preventDefault();
+		if (e) e.preventDefault();
 		const login = {
 			username: this.state.lusername.toLowerCase(),
 			password: this.state.lpassword
@@ -65,7 +65,6 @@ class SignIn extends Component {
 			});
 	}
 	registerSubmit(e) {
-		e.preventDefault();
 		const newUser = {
 			email: this.deleteSpaces(this.state.remail.toLowerCase()),
 			username: this.deleteSpaces(this.state.rusername.toLowerCase()),
@@ -109,6 +108,9 @@ class SignIn extends Component {
 	}
 	useDemoAccount() {
 		this.setState({ lusername: 'guestuser1', lpassword: 'guestpassword1' });
+		setTimeout(() => {
+			this.loginSubmit();
+		}, 1000);
 	}
 	render() {
 		const { user } = this.props;
