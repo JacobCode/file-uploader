@@ -65,6 +65,7 @@ class SignIn extends Component {
 			});
 	}
 	registerSubmit(e) {
+		if (e) e.preventDefault();
 		const newUser = {
 			email: this.deleteSpaces(this.state.remail.toLowerCase()),
 			username: this.deleteSpaces(this.state.rusername.toLowerCase()),
