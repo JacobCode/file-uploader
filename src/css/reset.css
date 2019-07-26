@@ -17,6 +17,9 @@ h1, h2 {
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
 }
+ul {
+	list-style: none;
+}
 .mb-6 {
 	margin-bottom: 4rem;
 }
