@@ -3,6 +3,8 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
+import spinner from '../media/spinner.svg';
+
 import '../css/signin.css';
 
 import { loginUser, signOut } from '../redux/actions/actions';
@@ -22,7 +24,8 @@ class SignIn extends Component {
 			id: '',
 			user: {},
 			error: '',
-			message: ''
+			message: '',
+			loading: false
 		}
 		this.handleInput = this.handleInput.bind(this);
 		this.loginSubmit = this.loginSubmit.bind(this);
@@ -39,6 +42,7 @@ class SignIn extends Component {
 	}
 	loginSubmit(e) {
 		if (e) e.preventDefault();
+		this.setState({ loading: true });
 		const login = {
 			username: this.state.lusername.toLowerCase(),
 			password: this.state.lpassword
@@ -52,7 +56,7 @@ class SignIn extends Component {
 						window.location.pathname = '/uploads';
 					}, 500);
 				} else {
-					this.setState({ error: res.data })
+					this.setState({ error: res.data, loading: false })
 					setTimeout(() => {
 						this.setState({ error: '' })
 					}, 3500)
@@ -60,38 +64,38 @@ class SignIn extends Component {
 				localStorage.setItem('user', JSON.stringify(this.props.user));
 			}).catch((err) => {
 				if (err.response !== undefined) {
-					this.setState({ error: 'Too many attempts, please try again later' });
+					this.setState({ error: 'Too many attempts, please try again later', loading: false });
 				}
 			});
 	}
 	registerSubmit(e) {
 		if (e) e.preventDefault();
+		this.setState({ loading: true });
 		const newUser = {
 			email: this.deleteSpaces(this.state.remail.toLowerCase()),
 			username: this.deleteSpaces(this.state.rusername.toLowerCase()),
 			password: this.deleteSpaces(this.state.rpassword)
 		}
 		axios.post(`${API_URL}/register`, newUser).then((res) => {
-			console.log(res.status)
 			if (res.status === 200) {
 				this.setState({ remail: '', rusername: '', rpassword: '', message: 'Registration Successful!' });
 				setTimeout(() => {
-					this.setState({ message: '' });
+					this.setState({ message: '', loading: false });
 					window.location.pathname = '/signin';
 				}, 750);
 			}
 			if (res.status === 201) {
-				this.setState({ error: res.data });
+				this.setState({ error: res.data, loading: false });
 				setTimeout(() => { this.setState({ error: '' })}, 2000);
 			}
 		}).catch((err) => {
 			if (typeof(err.response) === 'object') {
 				if (err.response.status === 429) {
 				this.setState({ error: err.response.data });
-				setTimeout(() => { this.setState({ error: '' })}, 2000);
+				setTimeout(() => { this.setState({ error: '', loading: false })}, 2000);
 			}
 			if (err.response.status === 404) {
-				this.setState({ message: 'Registration Successful!', remail: '', rusername: '', rpassword: '' });
+				this.setState({ message: 'Registration Successful!', remail: '', rusername: '', rpassword: '', loading: false });
 				setTimeout(() => {
 					this.setState({ message: '' });
 					window.location.pathname = '/signin';
@@ -117,7 +121,7 @@ class SignIn extends Component {
 		const { user } = this.props;
 		return (
 			<div className="container" style={{maxWidth: '600px', margin: '4rem auto 0'}} id="signin">
-
+				{this.state.loading === true ? <img id="spinner" src={spinner} alt="Loading..." /> : null}
 				{/* Show Login form if not logged in */}
 				{this.state.showLogin === true && user.username === null ? 
 				<form id="login-form" onSubmit={this.loginSubmit} className="form">
